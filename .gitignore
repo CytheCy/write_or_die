@@ -1,0 +1,46 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# IDE and Editor Directories
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# OS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env
+.env.test
+.env.production
+.env.local
+
+# Build output (if added later)
+dist/
+build/
+out/
