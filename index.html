@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Type or Die</title>
+    <title>Write or Die</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div id="app-container">
         <!-- Game Window -->
         <div id="game-container">
             <canvas id="gameCanvas"></canvas>
-            <div id="overlay">Start typing to begin...</div>
         </div>
 
         <!-- Writing Window with Typewriter -->
@@ -19,7 +20,7 @@
             <div id="typewriter-wrapper">
                 <!-- Paper that sits behind the typewriter -->
                 <div id="paper-area">
-                    <textarea id="writer" placeholder="Begin your story..."></textarea>
+                    <textarea id="writer" placeholder="Start typing to begin..."></textarea>
                 </div>
                 <!-- The Typewriter Image -->
                 <img src="assets/typewriter.png" id="typewriter-img" alt="Typewriter">
@@ -29,4 +30,5 @@
     </div>
     <script src="game.js"></script>
 </body>
+
 </html>

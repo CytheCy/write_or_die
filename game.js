@@ -1,7 +1,6 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const textArea = document.getElementById('writer');
-const overlay = document.getElementById('overlay');
 
 // Load Typewriter Sound
 const typeSound = new Audio('https://www.soundjay.com/communication/typewriter-key-1.mp3');
@@ -34,7 +33,6 @@ let player = {
 textArea.addEventListener('input', (e) => {
     if (!gameStarted) {
         gameStarted = true;
-        overlay.style.opacity = '0';
     }
 
     // Play Sound
