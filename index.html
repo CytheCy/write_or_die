@@ -101,6 +101,32 @@
             color: #86868b;
             font-size: 13px;
         }
+
+        #copyBtn {
+            position: fixed;
+            bottom: 50px;
+            right: 30px;
+            background-color: #e0e0e0;
+            color: #000;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 16px;
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0px #000;
+            cursor: pointer;
+            text-transform: uppercase;
+            z-index: 9999;
+        }
+
+        #copyBtn:hover {
+            background-color: #d0d0d0;
+        }
+
+        #copyBtn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #000;
+        }
     </style>
 </head>
 
@@ -122,6 +148,7 @@
                 <img src="assets/typewriter_green.png" id="typewriter-img" alt="Typewriter">
             </div>
             <div id="stats">Words: <span id="wordCount">0</span></div>
+            <button id="copyBtn">Copy Text</button>
         </div>
     </div>
     <script>
@@ -207,9 +234,13 @@
 
             // Death Condition (Far Left Lava)
             if (player.x < 70) {
-                isGameOver = true;
-                alert("The lava caught you! Your story ends here.");
-                location.reload();
+                if (!isGameOver) {
+                    isGameOver = true;
+                    if (textArea.value.trim().length > 0) {
+                        document.getElementById('copyBtn').style.display = 'block';
+                    }
+                    alert("The lava caught you! Your story ends here.");
+                }
             }
         }
 
@@ -248,6 +279,21 @@
             update();
             requestAnimationFrame(draw);
         }
+
+        // Copy Button Logic
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            const textToCopy = textArea.value;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.innerText;
+                btn.innerText = "COPIED!";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
 
         // Start
         resize();
