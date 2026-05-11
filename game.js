@@ -95,9 +95,9 @@ function draw() {
 
     // Draw Ground (Autumn Leaves style)
     ctx.fillStyle = "#6b3e2e"; // Dirt
-    ctx.fillRect(70, groundY, canvas.width, 50);
+    ctx.fillRect(0, groundY, canvas.width, 50);
     ctx.fillStyle = "#c1121f"; // Red Autumn top
-    ctx.fillRect(70, groundY, canvas.width, 8);
+    ctx.fillRect(0, groundY, canvas.width, 8);
 
     // Draw Player (The Book)
     if (bookImageLoaded) {
