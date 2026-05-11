@@ -6,6 +6,12 @@ const textArea = document.getElementById('writer');
 const typeSound = new Audio('https://www.soundjay.com/communication/typewriter-key-1.mp3');
 const bellSound = new Audio('https://www.soundjay.com/communication/typewriter-bell-1.mp3');
 
+// Load Player Image
+const bookImage = new Image();
+let bookImageLoaded = false;
+bookImage.onload = () => { bookImageLoaded = true; };
+bookImage.src = 'assets/book.png';
+
 // 1. Setup & Sizing
 function resize() {
     canvas.width = canvas.clientWidth;
@@ -93,13 +99,14 @@ function draw() {
     ctx.fillStyle = "#c1121f"; // Red Autumn top
     ctx.fillRect(70, groundY, canvas.width, 8);
 
-    // Draw Player Placeholder (The Writer)
-    ctx.fillStyle = "#1d1d1f";
-    ctx.fillRect(player.x, groundY - player.height, player.width, player.height);
-    
-    // Typewriter he's carrying
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(player.x + 20, groundY - 40, 25, 15);
+    // Draw Player (The Book)
+    if (bookImageLoaded) {
+        ctx.drawImage(bookImage, player.x, groundY - player.height, player.width, player.height);
+    } else {
+        // Fallback placeholder while loading
+        ctx.fillStyle = "#1d1d1f";
+        ctx.fillRect(player.x, groundY - player.height, player.width, player.height);
+    }
 
     update();
     requestAnimationFrame(draw);
