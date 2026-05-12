@@ -2,10 +2,10 @@ body,
 html {
     margin: 0;
     padding: 0;
-    height: 100%;
+    min-height: 100%;
     background-color: #f5f5f7;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 #app-container {
@@ -31,7 +31,7 @@ html {
 /* Typewriter Section */
 #editor-container {
     flex: 1;
-    background: #ebebeb;
+    background: #5d6872;
     display: flex;
     justify-content: center;
     align-items: flex-end;
@@ -42,7 +42,8 @@ html {
 
 #typewriter-wrapper {
     position: relative;
-    width: 1000px;
+    width: min(1000px, 100vw);
+    max-width: 100%;
     /* Adjust based on your image width */
     padding-top: 150px;
     /* Creates space for the paper inside the wrapper */
@@ -92,4 +93,49 @@ html {
     right: 30px;
     color: #86868b;
     font-size: 13px;
+}
+
+#copyBtn {
+    position: fixed;
+    bottom: 50px;
+    right: 30px;
+    background-color: #e0e0e0;
+    color: #000;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 16px;
+    border: 4px solid #000;
+    box-shadow: 4px 4px 0 #000;
+    cursor: pointer;
+    text-transform: uppercase;
+    z-index: 9999;
+}
+
+#copyBtn:hover {
+    background-color: #d0d0d0;
+}
+
+#copyBtn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 #000;
+}
+
+@media (max-width: 900px) {
+    #typewriter-wrapper {
+        width: 100%;
+        padding-top: 120px;
+    }
+
+    #paper-area {
+        left: 16%;
+        right: 18%;
+        height: 130px;
+        padding: 18px;
+    }
+
+    #writer {
+        font-size: 16px;
+        line-height: 1.4;
+    }
 }

@@ -12,6 +12,12 @@ let bookImageLoaded = false;
 bookImage.onload = () => { bookImageLoaded = true; };
 bookImage.src = 'assets/book.png';
 
+// Load Lava/RIP Image
+const ripImage = new Image();
+let ripImageLoaded = false;
+ripImage.onload = () => { ripImageLoaded = true; };
+ripImage.src = 'assets/RIP.png';
+
 // 1. Setup & Sizing
 function resize() {
     canvas.width = canvas.clientWidth;
@@ -30,8 +36,8 @@ let scrollSpeed = 1.5;
 
 let player = {
     x: 0,
-    width: 50,
-    height: 60,
+    width: 100,
+    height: 120,
     velocity: 0
 };
 
@@ -74,9 +80,10 @@ function update() {
 
     // Death Condition (Far Left Lava)
     if (player.x < 70) {
-        isGameOver = true;
-        alert("The lava caught you! Your story ends here.");
-        location.reload();
+        if (!isGameOver) {
+            isGameOver = true;
+            alert("The lava caught you! Your story ends here.");
+        }
     }
 }
 
@@ -89,15 +96,19 @@ function draw() {
     ctx.fillStyle = "#a8d1df";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw Lava (Left edge)
-    ctx.fillStyle = "#e63946";
-    ctx.fillRect(0, 0, 70, canvas.height);
-
     // Draw Ground (Autumn Leaves style)
     ctx.fillStyle = "#93a167"; // Dirt
     ctx.fillRect(0, groundY, canvas.width, 50);
     ctx.fillStyle = "#387080"; // Red Autumn top
     ctx.fillRect(0, groundY, canvas.width, 4);
+
+    // Draw Lava (Left edge)
+    if (ripImageLoaded) {
+        ctx.drawImage(ripImage, 0, 140, 170, 200);
+    } else {
+        ctx.fillStyle = "#e63946";
+        ctx.fillRect(0, 0, 70, canvas.height);
+    }
 
     // Draw Player (The Book)
     if (bookImageLoaded) {
@@ -115,3 +126,18 @@ function draw() {
 // Start
 resize();
 draw();
+
+// Copy Button Logic
+document.getElementById('copyBtn').addEventListener('click', () => {
+    const textToCopy = textArea.value;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const originalText = btn.innerText;
+        btn.innerText = "COPIED!";
+        setTimeout(() => {
+            btn.innerText = originalText;
+        }, 2000);
+    }).catch((err) => {
+        console.error('Failed to copy text: ', err);
+    });
+});
