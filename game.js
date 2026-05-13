@@ -152,7 +152,7 @@ function update() {
   player.velocity *= 0.8; // Friction
 
   // Bounds
-  if (player.x > canvas.width - 100) player.x = canvas.width - 100;
+  if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
 
   // Death Condition (Far Left Lava)
   if (player.x < 70) {
@@ -168,8 +168,8 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const groundY = canvas.height - 50;
-  const ripWidth = 170;
   const ripHeight = 200;
+  const bookHeight = player.height;
 
   // Draw Sky
   ctx.fillStyle = "#a8d1df";
@@ -183,6 +183,8 @@ function draw() {
 
   // Draw Lava (Left edge)
   if (ripImageLoaded) {
+    const ripAspectRatio = ripImage.naturalWidth / ripImage.naturalHeight;
+    const ripWidth = ripHeight * ripAspectRatio;
     const ripYOffset = 50; // positive = lower, negative = higher
     ctx.drawImage(
       ripImage,
@@ -198,12 +200,15 @@ function draw() {
 
   // Draw Player (The Book)
   if (bookImageLoaded) {
+    const bookAspectRatio = bookImage.naturalWidth / bookImage.naturalHeight;
+    const bookWidth = bookHeight * bookAspectRatio;
+    player.width = bookWidth;
     ctx.drawImage(
       bookImage,
       player.x,
-      groundY - player.height,
-      player.width,
-      player.height,
+      groundY - bookHeight,
+      bookWidth,
+      bookHeight,
     );
   } else {
     // Fallback placeholder while loading
