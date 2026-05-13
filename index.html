@@ -21,9 +21,9 @@
             </div>
             <div id="control-bar" aria-label="Game controls">
                 <button class="control-btn control-gap-after-brand" id="in20xxBtn">in20xx.com</button>
-                <button class="control-btn">Slow</button>
-                <button class="control-btn">Medium</button>
-                <button class="control-btn control-gap-after-speed">Fast</button>
+                <button class="control-btn speed-btn" data-speed="slow" aria-pressed="false">Slow</button>
+                <button class="control-btn speed-btn is-selected" data-speed="medium" aria-pressed="true">Medium</button>
+                <button class="control-btn control-gap-after-speed speed-btn" data-speed="fast" aria-pressed="false">Fast</button>
                 <button class="control-btn time-btn is-selected" data-minutes="10" aria-pressed="true">10 Minutes</button>
                 <button class="control-btn time-btn" data-minutes="15" aria-pressed="false">15 Minutes</button>
                 <button class="control-btn time-btn" data-minutes="30" aria-pressed="false">30 Minutes</button>

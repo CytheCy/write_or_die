@@ -1,6 +1,10 @@
 const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+const ctx = canvas?.getContext("2d");
 const textArea = document.getElementById("writer");
+
+if (!canvas || !ctx || !textArea) {
+  throw new Error("Missing required DOM elements for game startup.");
+}
 
 function focusWriter() {
   textArea.focus({ preventScroll: true });
@@ -17,6 +21,14 @@ const typeSound = new Audio(
 const bellSound = new Audio(
   "https://www.soundjay.com/communication/typewriter-bell-1.mp3",
 );
+
+function safePlay(audio) {
+  if (!audio) return;
+  const playResult = audio.play();
+  if (playResult && typeof playResult.catch === "function") {
+    playResult.catch(() => {});
+  }
+}
 
 // Load Player Image
 const bookImage = new Image();
@@ -59,6 +71,12 @@ let player = {
   width: 100,
   height: 120,
   velocity: 0,
+};
+
+const SPEED_BY_KEY = {
+  slow: 0.75,
+  medium: 1.5,
+  fast: 3,
 };
 
 function getSelectedMinutesFromButton() {
@@ -124,11 +142,11 @@ textArea.addEventListener("input", (e) => {
   // Play Sound
   typeSound.currentTime = 0;
   typeSound.volume = 0.3;
-  typeSound.play();
+  safePlay(typeSound);
 
   // If they hit space or enter, play the 'bell' sound
   if (e.inputType === "insertLineBreak") {
-    bellSound.play();
+    safePlay(bellSound);
   }
 
   // Character Boost
@@ -244,19 +262,36 @@ document.addEventListener("click", (event) => {
 // Copy Button Logic
 document.getElementById("copyBtn").addEventListener("click", () => {
   const textToCopy = textArea.value;
-  navigator.clipboard
-    .writeText(textToCopy)
-    .then(() => {
-      const btn = document.getElementById("copyBtn");
-      const originalText = btn.innerText;
-      btn.innerText = "COPIED!";
-      setTimeout(() => {
-        btn.innerText = originalText;
-      }, 2000);
-    })
-    .catch((err) => {
-      console.error("Failed to copy text: ", err);
-    });
+  const btn = document.getElementById("copyBtn");
+  const originalText = btn.innerText;
+
+  const showCopiedState = () => {
+    btn.innerText = "COPIED!";
+    setTimeout(() => {
+      btn.innerText = originalText;
+    }, 2000);
+  };
+
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard
+      .writeText(textToCopy)
+      .then(showCopiedState)
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+    return;
+  }
+
+  textArea.select();
+  try {
+    const copied = document.execCommand("copy");
+    if (copied) showCopiedState();
+  } catch (err) {
+    console.error("Failed to copy text: ", err);
+  } finally {
+    textArea.setSelectionRange(textArea.value.length, textArea.value.length);
+    refocusWriterSoon();
+  }
 });
 
 // Clean Sheet Logic
@@ -293,3 +328,31 @@ timeButtons.forEach((button) => {
 });
 
 resetTimerForSelection();
+
+// Speed Button Group Logic (single-select)
+const speedButtons = document.querySelectorAll(".speed-btn");
+
+function getScrollSpeedForButton(button) {
+  const speedKey = button?.dataset.speed || "medium";
+  return SPEED_BY_KEY[speedKey] ?? SPEED_BY_KEY.medium;
+}
+
+function selectSpeedButton(selectedButton) {
+  speedButtons.forEach((button) => {
+    const isSelected = button === selectedButton;
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+  });
+
+  scrollSpeed = getScrollSpeedForButton(selectedButton);
+}
+
+speedButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    selectSpeedButton(button);
+  });
+});
+
+selectSpeedButton(
+  document.querySelector(".speed-btn.is-selected") || speedButtons[1] || speedButtons[0],
+);
