@@ -65,6 +65,7 @@ let timerStarted = false;
 let timerIntervalId = null;
 let remainingSeconds = 10 * 60;
 let selectedMinutes = 10;
+let hasCopiedCurrentText = false;
 
 let player = {
   x: 0,
@@ -134,6 +135,8 @@ function startTimerIfNeeded() {
 
 // 3. The Input Engine
 textArea.addEventListener("input", (e) => {
+  hasCopiedCurrentText = false;
+
   if (!gameStarted) {
     gameStarted = true;
   }
@@ -149,8 +152,10 @@ textArea.addEventListener("input", (e) => {
     safePlay(bellSound);
   }
 
-  // Character Boost
-  player.velocity += 6;
+  // Character Boost: only advance on insertion, not deletion.
+  if (e.inputType && e.inputType.startsWith("insert")) {
+    player.velocity += 6;
+  }
 
   // Word Count UI
   const text = textArea.value.trim();
@@ -259,8 +264,7 @@ document.addEventListener("click", (event) => {
   }
 });
 
-// Copy Button Logic
-document.getElementById("copyBtn").addEventListener("click", () => {
+async function copyCurrentWriting() {
   const textToCopy = textArea.value;
   const btn = document.getElementById("copyBtn");
   const originalText = btn.innerText;
@@ -273,32 +277,69 @@ document.getElementById("copyBtn").addEventListener("click", () => {
   };
 
   if (navigator.clipboard?.writeText) {
-    navigator.clipboard
-      .writeText(textToCopy)
-      .then(showCopiedState)
-      .catch((err) => {
-        console.error("Failed to copy text: ", err);
-      });
-    return;
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      hasCopiedCurrentText = true;
+      showCopiedState();
+      return true;
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      return false;
+    }
   }
 
   textArea.select();
   try {
     const copied = document.execCommand("copy");
-    if (copied) showCopiedState();
+    if (copied) {
+      hasCopiedCurrentText = true;
+      showCopiedState();
+    }
+    return copied;
   } catch (err) {
     console.error("Failed to copy text: ", err);
+    return false;
   } finally {
     textArea.setSelectionRange(textArea.value.length, textArea.value.length);
     refocusWriterSoon();
   }
+}
+
+// Copy Button Logic
+document.getElementById("copyBtn").addEventListener("click", () => {
+  copyCurrentWriting();
 });
 
-// Clean Sheet Logic
-document.getElementById("cleanSheetBtn").addEventListener("click", () => {
+function resetForNewGame() {
   textArea.value = "";
   document.getElementById("wordCount").innerText = "0";
-  refocusWriterSoon();
+  window.location.reload();
+}
+
+// New Game Logic
+document.getElementById("newGameBtn").addEventListener("click", async () => {
+  const hasText = textArea.value.trim().length > 0;
+
+  if (!hasText) {
+    resetForNewGame();
+    return;
+  }
+
+  if (hasCopiedCurrentText) {
+    resetForNewGame();
+    return;
+  }
+
+  const shouldSaveFirst = window.confirm("Save your writing first?");
+  if (shouldSaveFirst) {
+    const copied = await copyCurrentWriting();
+    if (copied) {
+      resetForNewGame();
+    }
+    return;
+  }
+
+  resetForNewGame();
 });
 
 // in20xx.com Button Logic
