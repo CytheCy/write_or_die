@@ -109,18 +109,20 @@ html {
     color: #222;
 }
 
-#stats {
+#control-bar {
     position: absolute;
-    bottom: 20px;
-    right: 30px;
-    color: #86868b;
-    font-size: 13px;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    width: min(96vw, 1400px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    z-index: 5;
 }
 
-#copyBtn {
-    position: fixed;
-    bottom: 50px;
-    right: 30px;
+.control-btn {
     background-color: #e0e0e0;
     color: #000;
     font-family: "Courier New", Courier, monospace;
@@ -131,14 +133,13 @@ html {
     box-shadow: 4px 4px 0 #000;
     cursor: pointer;
     text-transform: uppercase;
-    z-index: 9999;
 }
 
-#copyBtn:hover {
+.control-btn:hover {
     background-color: #d0d0d0;
 }
 
-#copyBtn:active {
+.control-btn:active {
     transform: translate(4px, 4px);
     box-shadow: 0 0 0 #000;
 }
@@ -165,5 +166,17 @@ html {
     #writer {
         font-size: 16px;
         line-height: 1.4;
+    }
+
+    #control-bar {
+        bottom: 8px;
+        gap: 8px;
+    }
+
+    .control-btn {
+        font-size: 13px;
+        padding: 8px 10px;
+        border-width: 3px;
+        box-shadow: 3px 3px 0 #000;
     }
 }
