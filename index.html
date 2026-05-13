@@ -24,10 +24,11 @@
                 <button class="control-btn">Slow</button>
                 <button class="control-btn">Medium</button>
                 <button class="control-btn control-gap-after-speed">Fast</button>
-                <button class="control-btn">10 Minutes</button>
-                <button class="control-btn">15 Minutes</button>
-                <button class="control-btn">30 Minutes</button>
-                <button class="control-btn control-gap-after-time">60 Minutes</button>
+                <button class="control-btn time-btn is-selected" data-minutes="10" aria-pressed="true">10 Minutes</button>
+                <button class="control-btn time-btn" data-minutes="15" aria-pressed="false">15 Minutes</button>
+                <button class="control-btn time-btn" data-minutes="30" aria-pressed="false">30 Minutes</button>
+                <button class="control-btn control-gap-after-time time-btn" data-minutes="60" aria-pressed="false">60 Minutes</button>
+                <button class="control-btn" id="clockBtn" aria-live="polite">Time Left: <span id="clockDisplay">10:00</span></button>
                 <button class="control-btn" id="wordCountBtn">Word Count: <span id="wordCount">0</span></button>
                 <button class="control-btn" id="copyBtn">Copy Text</button>
                 <button class="control-btn" id="cleanSheetBtn">Clean Sheet</button>

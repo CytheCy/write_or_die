@@ -49,6 +49,10 @@ window.addEventListener("resize", resize);
 let gameStarted = false;
 let isGameOver = false;
 let scrollSpeed = 1.5;
+let timerStarted = false;
+let timerIntervalId = null;
+let remainingSeconds = 10 * 60;
+let selectedMinutes = 10;
 
 let player = {
   x: 0,
@@ -57,11 +61,65 @@ let player = {
   velocity: 0,
 };
 
+function getSelectedMinutesFromButton() {
+  const selectedButton = document.querySelector(".time-btn.is-selected");
+  const minutes = Number.parseInt(selectedButton?.dataset.minutes || "10", 10);
+  return Number.isNaN(minutes) ? 10 : minutes;
+}
+
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${String(minutes)}:${String(secs).padStart(2, "0")}`;
+}
+
+function updateClockDisplay() {
+  document.getElementById("clockDisplay").innerText = formatTime(remainingSeconds);
+}
+
+function resetTimerForSelection() {
+  selectedMinutes = getSelectedMinutesFromButton();
+  remainingSeconds = selectedMinutes * 60;
+  updateClockDisplay();
+}
+
+function stopTimer() {
+  if (timerIntervalId) {
+    clearInterval(timerIntervalId);
+    timerIntervalId = null;
+  }
+}
+
+function startTimerIfNeeded() {
+  if (timerStarted || isGameOver) return;
+  timerStarted = true;
+
+  timerIntervalId = setInterval(() => {
+    if (isGameOver) {
+      stopTimer();
+      return;
+    }
+
+    remainingSeconds -= 1;
+    if (remainingSeconds < 0) remainingSeconds = 0;
+    updateClockDisplay();
+
+    if (remainingSeconds === 0) {
+      stopTimer();
+      if (player.x >= 70 && !isGameOver) {
+        isGameOver = true;
+        alert("You won! You can live to write another day!");
+      }
+    }
+  }, 1000);
+}
+
 // 3. The Input Engine
 textArea.addEventListener("input", (e) => {
   if (!gameStarted) {
     gameStarted = true;
   }
+  startTimerIfNeeded();
 
   // Play Sound
   typeSound.currentTime = 0;
@@ -100,6 +158,7 @@ function update() {
   if (player.x < 70) {
     if (!isGameOver) {
       isGameOver = true;
+      stopTimer();
       alert("The lava caught you! Your story ends here.");
     }
   }
@@ -206,3 +265,26 @@ document.getElementById("cleanSheetBtn").addEventListener("click", () => {
 document.getElementById("in20xxBtn").addEventListener("click", () => {
   window.open("https://in20xx.com", "_blank", "noopener,noreferrer");
 });
+
+// Time Button Group Logic (single-select)
+const timeButtons = document.querySelectorAll(".time-btn");
+
+function selectTimeButton(selectedButton) {
+  if (timerStarted) return;
+
+  timeButtons.forEach((button) => {
+    const isSelected = button === selectedButton;
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+  });
+
+  resetTimerForSelection();
+}
+
+timeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    selectTimeButton(button);
+  });
+});
+
+resetTimerForSelection();

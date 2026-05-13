@@ -181,6 +181,15 @@ html {
     background-color: #d0d0d0;
 }
 
+.control-btn.is-selected {
+    background-color: #ffd166;
+    color: #000;
+}
+
+.control-btn.is-selected:hover {
+    background-color: #f7c247;
+}
+
 .control-btn:active {
     transform: translate(4px, 4px);
     box-shadow: 0 0 0 #000;
