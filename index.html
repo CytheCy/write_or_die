@@ -15,21 +15,22 @@
             <img src="assets/desk.png" id="desk-bg" alt="" aria-hidden="true">
             <div id="typewriter-wrapper">
                 <div id="paper-area">
-                    <textarea id="writer" placeholder="Start typing to begin..."></textarea>
+                    <textarea id="writer" placeholder="Start typing to begin..." autofocus></textarea>
                 </div>
                 <img src="assets/typewriter_green.png" id="typewriter-img" alt="Typewriter">
             </div>
             <div id="control-bar" aria-label="Game controls">
-                <button class="control-btn">in20xx.com</button>
+                <button class="control-btn control-gap-after-brand" id="in20xxBtn">in20xx.com</button>
                 <button class="control-btn">Slow</button>
                 <button class="control-btn">Medium</button>
-                <button class="control-btn">Fast</button>
+                <button class="control-btn control-gap-after-speed">Fast</button>
                 <button class="control-btn">10 Minutes</button>
                 <button class="control-btn">15 Minutes</button>
                 <button class="control-btn">30 Minutes</button>
-                <button class="control-btn">60 Minutes</button>
+                <button class="control-btn control-gap-after-time">60 Minutes</button>
                 <button class="control-btn" id="wordCountBtn">Word Count: <span id="wordCount">0</span></button>
                 <button class="control-btn" id="copyBtn">Copy Text</button>
+                <button class="control-btn" id="cleanSheetBtn">Clean Sheet</button>
             </div>
         </div>
     </div>

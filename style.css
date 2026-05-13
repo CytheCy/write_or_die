@@ -114,11 +114,13 @@ html {
     left: 50%;
     bottom: 16px;
     transform: translateX(-50%);
-    width: min(96vw, 1400px);
+    width: min(calc(100vw - 24px), 1500px);
+    box-sizing: border-box;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
     gap: 10px;
+    overflow: visible;
     z-index: 5;
 }
 
@@ -133,6 +135,46 @@ html {
     box-shadow: 4px 4px 0 #000;
     cursor: pointer;
     text-transform: uppercase;
+    image-rendering: pixelated;
+    position: relative;
+}
+
+.control-btn::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    pointer-events: none;
+    border: 2px solid #000;
+    clip-path: polygon(
+        0 8px,
+        2px 8px,
+        2px 4px,
+        4px 4px,
+        4px 2px,
+        8px 2px,
+        8px 0,
+        calc(100% - 8px) 0,
+        calc(100% - 8px) 2px,
+        calc(100% - 4px) 2px,
+        calc(100% - 4px) 4px,
+        calc(100% - 2px) 4px,
+        calc(100% - 2px) 8px,
+        100% 8px,
+        100% calc(100% - 8px),
+        calc(100% - 2px) calc(100% - 8px),
+        calc(100% - 2px) calc(100% - 4px),
+        calc(100% - 4px) calc(100% - 4px),
+        calc(100% - 4px) calc(100% - 2px),
+        calc(100% - 8px) calc(100% - 2px),
+        calc(100% - 8px) 100%,
+        8px 100%,
+        8px calc(100% - 2px),
+        4px calc(100% - 2px),
+        4px calc(100% - 4px),
+        2px calc(100% - 4px),
+        2px calc(100% - 8px),
+        0 calc(100% - 8px)
+    );
 }
 
 .control-btn:hover {
@@ -142,6 +184,18 @@ html {
 .control-btn:active {
     transform: translate(4px, 4px);
     box-shadow: 0 0 0 #000;
+}
+
+.control-gap-after-brand {
+    margin-right: 36px;
+}
+
+.control-gap-after-speed {
+    margin-right: 36px;
+}
+
+.control-gap-after-time {
+    margin-right: 36px;
 }
 
 @media (max-width: 900px) {
@@ -170,6 +224,8 @@ html {
 
     #control-bar {
         bottom: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 8px;
     }
 
@@ -178,5 +234,11 @@ html {
         padding: 8px 10px;
         border-width: 3px;
         box-shadow: 3px 3px 0 #000;
+    }
+
+    .control-gap-after-brand,
+    .control-gap-after-speed,
+    .control-gap-after-time {
+        margin-right: 20px;
     }
 }

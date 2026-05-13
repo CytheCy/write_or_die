@@ -2,6 +2,14 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const textArea = document.getElementById("writer");
 
+function focusWriter() {
+  textArea.focus({ preventScroll: true });
+}
+
+function refocusWriterSoon() {
+  setTimeout(focusWriter, 0);
+}
+
 // Load Typewriter Sound
 const typeSound = new Audio(
   "https://www.soundjay.com/communication/typewriter-key-1.mp3",
@@ -156,6 +164,18 @@ function draw() {
 // Start
 resize();
 draw();
+focusWriter();
+window.addEventListener("load", () => {
+  focusWriter();
+  setTimeout(focusWriter, 75);
+});
+
+// Keep typing focus after clicks outside the textarea (including control buttons).
+document.addEventListener("click", (event) => {
+  if (event.target !== textArea) {
+    refocusWriterSoon();
+  }
+});
 
 // Copy Button Logic
 document.getElementById("copyBtn").addEventListener("click", () => {
@@ -173,4 +193,16 @@ document.getElementById("copyBtn").addEventListener("click", () => {
     .catch((err) => {
       console.error("Failed to copy text: ", err);
     });
+});
+
+// Clean Sheet Logic
+document.getElementById("cleanSheetBtn").addEventListener("click", () => {
+  textArea.value = "";
+  document.getElementById("wordCount").innerText = "0";
+  refocusWriterSoon();
+});
+
+// in20xx.com Button Logic
+document.getElementById("in20xxBtn").addEventListener("click", () => {
+  window.open("https://in20xx.com", "_blank", "noopener,noreferrer");
 });
