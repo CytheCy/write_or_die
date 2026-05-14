@@ -72,22 +72,27 @@ html {
 }
 
 #save-confirm-overlay,
-#game-over-overlay {
+#game-over-overlay,
+#game-win-overlay {
     position: absolute;
     inset: 0;
     z-index: 4;
     display: none;
     align-items: center;
     justify-content: center;
+    padding-bottom: 140px;
+    box-sizing: border-box;
 }
 
 #save-confirm-overlay.is-visible,
-#game-over-overlay.is-visible {
+#game-over-overlay.is-visible,
+#game-win-overlay.is-visible {
     display: flex;
 }
 
 #save-confirm-box,
-#game-over-box {
+#game-over-box,
+#game-win-box {
     width: min(420px, calc(100% - 32px));
     min-height: 150px;
     background-color: #e0e0e0;
@@ -105,7 +110,8 @@ html {
 }
 
 #save-confirm-box::before,
-#game-over-box::before {
+#game-over-box::before,
+#game-win-box::before {
     content: "";
     position: absolute;
     inset: -4px;
@@ -146,7 +152,7 @@ html {
 #saveConfirmPrompt {
     margin: 0;
     font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
+    font-size: 22px;
     font-weight: bold;
     color: #000;
 }
@@ -154,7 +160,15 @@ html {
 #gameOverPrompt {
     margin: 0;
     font-family: "Courier New", Courier, monospace;
-    font-size: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+}
+
+#gameWinPrompt {
+    margin: 0;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 20px;
     font-weight: bold;
     color: #000;
 }
@@ -340,9 +354,16 @@ html {
         gap: 16px;
     }
 
+    #save-confirm-overlay,
+    #game-over-overlay,
+    #game-win-overlay {
+        padding-bottom: 96px;
+    }
+
     #saveConfirmPrompt,
-    #gameOverPrompt {
-        font-size: 13px;
+    #gameOverPrompt,
+    #gameWinPrompt {
+        font-size: 17px;
     }
 
     #control-bar {

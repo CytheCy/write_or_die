@@ -5,6 +5,7 @@ const saveConfirmOverlay = document.getElementById("save-confirm-overlay");
 const saveConfirmYesBtn = document.getElementById("saveConfirmYesBtn");
 const saveConfirmNoBtn = document.getElementById("saveConfirmNoBtn");
 const gameOverOverlay = document.getElementById("game-over-overlay");
+const gameWinOverlay = document.getElementById("game-win-overlay");
 
 if (
   !canvas ||
@@ -13,7 +14,8 @@ if (
   !saveConfirmOverlay ||
   !saveConfirmYesBtn ||
   !saveConfirmNoBtn ||
-  !gameOverOverlay
+  !gameOverOverlay ||
+  !gameWinOverlay
 ) {
   throw new Error("Missing required DOM elements for game startup.");
 }
@@ -78,6 +80,7 @@ let timerIntervalId = null;
 let remainingSeconds = 10 * 60;
 let selectedMinutes = 10;
 let hasCopiedCurrentText = false;
+let in20xxCheatCountApplied = 0;
 
 let player = {
   x: 0,
@@ -131,6 +134,16 @@ function hideGameOverOverlay() {
   gameOverOverlay.setAttribute("aria-hidden", "true");
 }
 
+function showGameWinOverlay() {
+  gameWinOverlay.classList.add("is-visible");
+  gameWinOverlay.setAttribute("aria-hidden", "false");
+}
+
+function hideGameWinOverlay() {
+  gameWinOverlay.classList.remove("is-visible");
+  gameWinOverlay.setAttribute("aria-hidden", "true");
+}
+
 function startTimerIfNeeded() {
   if (timerStarted || isGameOver) return;
   timerStarted = true;
@@ -149,7 +162,7 @@ function startTimerIfNeeded() {
       stopTimer();
       if (player.x >= 70 && !isGameOver) {
         isGameOver = true;
-        alert("You won! You can live to write another day!");
+        showGameWinOverlay();
       }
     }
   }, 1000);
@@ -180,10 +193,23 @@ textArea.addEventListener("input", (e) => {
   }
 
   // Word Count UI
-  const text = textArea.value.trim();
+  const rawText = textArea.value;
+  const text = rawText.trim();
   document.getElementById("wordCount").innerText = text
     ? text.split(/\s+/).length
     : 0;
+
+  // Test hook: each new "in20xx" occurrence fast-forwards the timer by 9 minutes.
+  const in20xxMatches = rawText.toLowerCase().match(/in20xx/g);
+  const in20xxCountNow = in20xxMatches ? in20xxMatches.length : 0;
+  if (in20xxCountNow > in20xxCheatCountApplied) {
+    const newlyTypedCount = in20xxCountNow - in20xxCheatCountApplied;
+    remainingSeconds = Math.max(0, remainingSeconds - newlyTypedCount * 9 * 60);
+    in20xxCheatCountApplied = in20xxCountNow;
+    updateClockDisplay();
+  } else if (in20xxCountNow < in20xxCheatCountApplied) {
+    in20xxCheatCountApplied = in20xxCountNow;
+  }
 });
 
 function update() {
@@ -334,6 +360,7 @@ document.getElementById("copyBtn").addEventListener("click", () => {
 
 function resetForNewGame() {
   hideGameOverOverlay();
+  hideGameWinOverlay();
   saveConfirmOverlay.classList.remove("is-visible");
   saveConfirmOverlay.setAttribute("aria-hidden", "true");
   textArea.value = "";
@@ -369,6 +396,7 @@ function askToSaveBeforeNewGame() {
 // New Game Logic
 document.getElementById("newGameBtn").addEventListener("click", async () => {
   const isDeathBoxVisible = gameOverOverlay.classList.contains("is-visible");
+  const isWinBoxVisible = gameWinOverlay.classList.contains("is-visible");
   const hasText = textArea.value.trim().length > 0;
 
   if (!hasText) {
@@ -380,12 +408,18 @@ document.getElementById("newGameBtn").addEventListener("click", async () => {
     if (isDeathBoxVisible) {
       hideGameOverOverlay();
     }
+    if (isWinBoxVisible) {
+      hideGameWinOverlay();
+    }
     resetForNewGame();
     return;
   }
 
   if (isDeathBoxVisible) {
     hideGameOverOverlay();
+  }
+  if (isWinBoxVisible) {
+    hideGameWinOverlay();
   }
 
   const shouldSaveFirst = await askToSaveBeforeNewGame();
