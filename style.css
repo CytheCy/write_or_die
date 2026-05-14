@@ -71,6 +71,100 @@ html {
     z-index: 2;
 }
 
+#save-confirm-overlay,
+#game-over-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#save-confirm-overlay.is-visible,
+#game-over-overlay.is-visible {
+    display: flex;
+}
+
+#save-confirm-box,
+#game-over-box {
+    width: min(420px, calc(100% - 32px));
+    min-height: 150px;
+    background-color: #e0e0e0;
+    border: 4px solid #000;
+    box-shadow: 4px 4px 0 #000;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    text-align: center;
+    padding: 16px 20px;
+    box-sizing: border-box;
+}
+
+#save-confirm-box::before,
+#game-over-box::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    pointer-events: none;
+    border: 2px solid #000;
+    clip-path: polygon(
+        0 8px,
+        2px 8px,
+        2px 4px,
+        4px 4px,
+        4px 2px,
+        8px 2px,
+        8px 0,
+        calc(100% - 8px) 0,
+        calc(100% - 8px) 2px,
+        calc(100% - 4px) 2px,
+        calc(100% - 4px) 4px,
+        calc(100% - 2px) 4px,
+        calc(100% - 2px) 8px,
+        100% 8px,
+        100% calc(100% - 8px),
+        calc(100% - 2px) calc(100% - 8px),
+        calc(100% - 2px) calc(100% - 4px),
+        calc(100% - 4px) calc(100% - 4px),
+        calc(100% - 4px) calc(100% - 2px),
+        calc(100% - 8px) calc(100% - 2px),
+        calc(100% - 8px) 100%,
+        8px 100%,
+        8px calc(100% - 2px),
+        4px calc(100% - 2px),
+        4px calc(100% - 4px),
+        2px calc(100% - 4px),
+        2px calc(100% - 8px),
+        0 calc(100% - 8px)
+    );
+}
+
+#saveConfirmPrompt {
+    margin: 0;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+}
+
+#gameOverPrompt {
+    margin: 0;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+}
+
+#save-confirm-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+}
+
 #typewriter-img {
     width: 100%;
     display: block;
@@ -102,11 +196,18 @@ html {
     border: none;
     outline: none;
     resize: none;
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     background: transparent;
     font-family: "Courier New", Courier, monospace;
     font-size: 19px;
     line-height: 1.6;
     color: #222;
+}
+
+#writer::-webkit-scrollbar {
+    display: none;
 }
 
 #control-bar {
@@ -229,6 +330,19 @@ html {
     #writer {
         font-size: 16px;
         line-height: 1.4;
+    }
+
+    #save-confirm-box,
+    #game-over-box {
+        width: min(360px, calc(100% - 20px));
+        min-height: 130px;
+        padding: 14px 16px;
+        gap: 16px;
+    }
+
+    #saveConfirmPrompt,
+    #gameOverPrompt {
+        font-size: 13px;
     }
 
     #control-bar {

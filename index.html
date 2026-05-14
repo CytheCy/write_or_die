@@ -18,6 +18,20 @@
                     <textarea id="writer" placeholder="Select speed...&#10;Select duration...&#10;Start typing to begin game..." autofocus></textarea>
                 </div>
                 <img src="assets/typewriter_green.png" id="typewriter-img" alt="Typewriter">
+                <div id="save-confirm-overlay" aria-hidden="true">
+                    <div id="save-confirm-box" role="dialog" aria-modal="true" aria-labelledby="saveConfirmPrompt">
+                        <p id="saveConfirmPrompt">Save your writing first?</p>
+                        <div id="save-confirm-actions">
+                            <button class="control-btn" id="saveConfirmYesBtn">Yes</button>
+                            <button class="control-btn" id="saveConfirmNoBtn">No</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="game-over-overlay" aria-hidden="true">
+                    <div id="game-over-box" role="dialog" aria-modal="true" aria-labelledby="gameOverPrompt">
+                        <p id="gameOverPrompt">You died! Stretch a bit then try again!</p>
+                    </div>
+                </div>
             </div>
             <div id="control-bar" aria-label="Game controls">
                 <button class="control-btn control-gap-after-brand" id="in20xxBtn" title="Brought to you by Cy Porter.&#10;Click to check out his speculative sci-fi.">in20xx.com</button>

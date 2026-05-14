@@ -1,8 +1,20 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas?.getContext("2d");
 const textArea = document.getElementById("writer");
+const saveConfirmOverlay = document.getElementById("save-confirm-overlay");
+const saveConfirmYesBtn = document.getElementById("saveConfirmYesBtn");
+const saveConfirmNoBtn = document.getElementById("saveConfirmNoBtn");
+const gameOverOverlay = document.getElementById("game-over-overlay");
 
-if (!canvas || !ctx || !textArea) {
+if (
+  !canvas ||
+  !ctx ||
+  !textArea ||
+  !saveConfirmOverlay ||
+  !saveConfirmYesBtn ||
+  !saveConfirmNoBtn ||
+  !gameOverOverlay
+) {
   throw new Error("Missing required DOM elements for game startup.");
 }
 
@@ -109,6 +121,16 @@ function stopTimer() {
   }
 }
 
+function showGameOverOverlay() {
+  gameOverOverlay.classList.add("is-visible");
+  gameOverOverlay.setAttribute("aria-hidden", "false");
+}
+
+function hideGameOverOverlay() {
+  gameOverOverlay.classList.remove("is-visible");
+  gameOverOverlay.setAttribute("aria-hidden", "true");
+}
+
 function startTimerIfNeeded() {
   if (timerStarted || isGameOver) return;
   timerStarted = true;
@@ -182,7 +204,7 @@ function update() {
     if (!isGameOver) {
       isGameOver = true;
       stopTimer();
-      alert("The lava caught you! Your story ends here.");
+      showGameOverOverlay();
     }
   }
 }
@@ -311,13 +333,42 @@ document.getElementById("copyBtn").addEventListener("click", () => {
 });
 
 function resetForNewGame() {
+  hideGameOverOverlay();
+  saveConfirmOverlay.classList.remove("is-visible");
+  saveConfirmOverlay.setAttribute("aria-hidden", "true");
   textArea.value = "";
   document.getElementById("wordCount").innerText = "0";
   window.location.reload();
 }
 
+function askToSaveBeforeNewGame() {
+  return new Promise((resolve) => {
+    function closePrompt(shouldSave) {
+      saveConfirmOverlay.classList.remove("is-visible");
+      saveConfirmOverlay.setAttribute("aria-hidden", "true");
+      saveConfirmYesBtn.removeEventListener("click", onYes);
+      saveConfirmNoBtn.removeEventListener("click", onNo);
+      resolve(shouldSave);
+    }
+
+    function onYes() {
+      closePrompt(true);
+    }
+
+    function onNo() {
+      closePrompt(false);
+    }
+
+    saveConfirmYesBtn.addEventListener("click", onYes);
+    saveConfirmNoBtn.addEventListener("click", onNo);
+    saveConfirmOverlay.classList.add("is-visible");
+    saveConfirmOverlay.setAttribute("aria-hidden", "false");
+  });
+}
+
 // New Game Logic
 document.getElementById("newGameBtn").addEventListener("click", async () => {
+  const isDeathBoxVisible = gameOverOverlay.classList.contains("is-visible");
   const hasText = textArea.value.trim().length > 0;
 
   if (!hasText) {
@@ -326,11 +377,18 @@ document.getElementById("newGameBtn").addEventListener("click", async () => {
   }
 
   if (hasCopiedCurrentText) {
+    if (isDeathBoxVisible) {
+      hideGameOverOverlay();
+    }
     resetForNewGame();
     return;
   }
 
-  const shouldSaveFirst = window.confirm("Save your writing first?");
+  if (isDeathBoxVisible) {
+    hideGameOverOverlay();
+  }
+
+  const shouldSaveFirst = await askToSaveBeforeNewGame();
   if (shouldSaveFirst) {
     const copied = await copyCurrentWriting();
     if (copied) {
