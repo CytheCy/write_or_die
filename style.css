@@ -10,9 +10,7 @@ html {
 }
 
 :root {
-    --desk-width: 100vw;
-    --desk-x: 0px;
-    --desk-y: 18px;
+    --desk-overlap: 90px;
     --editor-min-height: 470px;
 }
 
@@ -47,18 +45,23 @@ html {
     /* Keeps typewriter at bottom */
     padding-bottom: 0px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 #desk-bg {
     position: absolute;
-    left: 50%;
+    top: calc(-1 * var(--desk-overlap));
+    left: 0;
+    right: 0;
     bottom: 0;
-    width: var(--desk-width);
-    transform: translate(calc(-50% + var(--desk-x)), var(--desk-y));
+    height: calc(100% + var(--desk-overlap));
     z-index: 1;
-    image-rendering: pixelated;
     pointer-events: none;
+    background-image: url("assets/desk.png");
+    background-repeat: repeat-x;
+    background-position: left bottom;
+    background-size: auto 100%;
+    image-rendering: pixelated;
 }
 
 #typewriter-wrapper {
@@ -192,8 +195,8 @@ html {
     position: absolute;
     top: 0;
     /* Now positioned inside the wrapper's top padding */
-    left: 23%;
-    right: 25%;
+    left: 26%;
+    right: 19%;
     height: 150px;
     /* How far down the paper goes */
     background: #ffffff;
@@ -324,8 +327,6 @@ html {
 
 @media (max-width: 900px) {
     :root {
-        --desk-width: 100vw;
-        --desk-y: 6px;
         --editor-min-height: 390px;
     }
 
