@@ -60,6 +60,88 @@ ripImage.onload = () => {
 };
 ripImage.src = "assets/RIP.png";
 
+const cloudImagePaths = [
+  "assets/cloud01.png",
+  "assets/cloud02.png",
+  "assets/cloud03.png",
+  "assets/cloud04.png",
+  "assets/cloud05.png",
+  "assets/cloud06.png",
+  "assets/cloud07.png",
+  "assets/cloud08.png",
+];
+
+const cloudImages = cloudImagePaths.map((path) => {
+  const image = new Image();
+  image.src = path;
+  return image;
+});
+
+const clouds = [];
+const CLOUD_COUNT = 10;
+const CLOUD_SPEED_MIN = 0.2;
+const CLOUD_SPEED_MAX = 0.7;
+const CLOUD_SCALE_MIN = 0.55;
+const CLOUD_SCALE_MAX = 1.0;
+
+function randomRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function randomCloudImage() {
+  return cloudImages[Math.floor(Math.random() * cloudImages.length)];
+}
+
+function spawnCloud(startingRight = false) {
+  const image = randomCloudImage();
+  const naturalWidth = image.naturalWidth || 256;
+  const naturalHeight = image.naturalHeight || 128;
+  const scale = randomRange(CLOUD_SCALE_MIN, CLOUD_SCALE_MAX);
+  const width = naturalWidth * scale;
+  const height = naturalHeight * scale;
+  const margin = 24;
+  const x = startingRight
+    ? canvas.width + randomRange(0, canvas.width * 0.35)
+    : randomRange(-width, canvas.width + margin);
+  const y = randomRange(8, Math.max(12, canvas.height * 0.38 - height));
+  const speed = randomRange(CLOUD_SPEED_MIN, CLOUD_SPEED_MAX);
+
+  return {
+    image,
+    x,
+    y,
+    width,
+    height,
+    speed,
+  };
+}
+
+function setupClouds() {
+  clouds.length = 0;
+  for (let i = 0; i < CLOUD_COUNT; i += 1) {
+    clouds.push(spawnCloud(false));
+  }
+}
+
+function updateClouds() {
+  for (let i = 0; i < clouds.length; i += 1) {
+    const cloud = clouds[i];
+    cloud.x -= cloud.speed;
+
+    if (cloud.x + cloud.width < -30) {
+      clouds[i] = spawnCloud(true);
+    }
+  }
+}
+
+function drawClouds() {
+  for (let i = 0; i < clouds.length; i += 1) {
+    const cloud = clouds[i];
+    if (!cloud.image.complete) continue;
+    ctx.drawImage(cloud.image, cloud.x, cloud.y, cloud.width, cloud.height);
+  }
+}
+
 // 1. Setup & Sizing
 function resize() {
   canvas.width = canvas.clientWidth;
@@ -67,6 +149,9 @@ function resize() {
   // Set starting position to far right
   if (!gameStarted) {
     player.x = canvas.width - 150;
+  }
+  if (!clouds.length) {
+    setupClouds();
   }
 }
 window.addEventListener("resize", resize);
@@ -245,6 +330,10 @@ function draw() {
   // Draw Sky
   ctx.fillStyle = "#a8d1df";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw moving clouds behind hazards/player
+  updateClouds();
+  drawClouds();
 
   // Draw Ground (Autumn Leaves style)
   ctx.fillStyle = "#557064"; // Dirt
