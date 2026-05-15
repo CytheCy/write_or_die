@@ -12,6 +12,7 @@ html {
 :root {
     --desk-overlap: 90px;
     --editor-min-height: 470px;
+    --rip-y-offset: 90px;
 }
 
 #app-container {
@@ -24,8 +25,9 @@ html {
     flex: 1 1 auto;
     min-height: 120px;
     max-height: calc(100vh - var(--editor-min-height));
-    background: #557064;
+    background: transparent;
     position: relative;
+    z-index: 3;
 }
 
 #gameCanvas {
@@ -45,6 +47,7 @@ html {
     /* Keeps typewriter at bottom */
     padding-bottom: 0px;
     position: relative;
+    z-index: 2;
     overflow: visible;
 }
 
@@ -61,6 +64,18 @@ html {
     background-repeat: repeat-x;
     background-position: left bottom;
     background-size: auto 100%;
+    image-rendering: pixelated;
+}
+
+#rip-overlay {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 400px;
+    width: auto;
+    z-index: 2;
+    transform: translateY(var(--rip-y-offset));
+    pointer-events: none;
     image-rendering: pixelated;
 }
 

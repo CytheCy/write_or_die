@@ -52,14 +52,6 @@ bookImage.onload = () => {
 };
 bookImage.src = "assets/book.png";
 
-// Load Lava/RIP Image
-const ripImage = new Image();
-let ripImageLoaded = false;
-ripImage.onload = () => {
-  ripImageLoaded = true;
-};
-ripImage.src = "assets/RIP.png";
-
 const cloudImagePaths = [
   "assets/cloud01.png",
   "assets/cloud02.png",
@@ -193,7 +185,8 @@ function formatTime(seconds) {
 }
 
 function updateClockDisplay() {
-  document.getElementById("clockDisplay").innerText = formatTime(remainingSeconds);
+  document.getElementById("clockDisplay").innerText =
+    formatTime(remainingSeconds);
 }
 
 function resetTimerForSelection() {
@@ -308,7 +301,8 @@ function update() {
   player.velocity *= 0.8; // Friction
 
   // Bounds
-  if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+  if (player.x > canvas.width - player.width)
+    player.x = canvas.width - player.width;
 
   // Death Condition (Far Left Lava)
   if (player.x < 70) {
@@ -323,40 +317,21 @@ function update() {
 // 4. Drawing the Visuals
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const deskOverlapRaw = getComputedStyle(
+    document.documentElement,
+  ).getPropertyValue("--desk-overlap");
+  const deskOverlap = Number.parseInt(deskOverlapRaw, 10) || 90;
+  const visibleSkyHeight = Math.max(0, canvas.height - deskOverlap);
   const groundY = canvas.height - 50;
-  const ripHeight = 200;
   const bookHeight = player.height;
 
   // Draw Sky
   ctx.fillStyle = "#a8d1df";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, canvas.width, visibleSkyHeight);
 
   // Draw moving clouds behind hazards/player
   updateClouds();
   drawClouds();
-
-  // Draw Ground (Autumn Leaves style)
-  ctx.fillStyle = "#557064"; // Dirt
-  ctx.fillRect(0, groundY, canvas.width, 50);
-  ctx.fillStyle = "#387080"; // Red Autumn top
-  ctx.fillRect(0, groundY, canvas.width, 4);
-
-  // Draw Lava (Left edge)
-  if (ripImageLoaded) {
-    const ripAspectRatio = ripImage.naturalWidth / ripImage.naturalHeight;
-    const ripWidth = ripHeight * ripAspectRatio;
-    const ripYOffset = 50; // positive = lower, negative = higher
-    ctx.drawImage(
-      ripImage,
-      0,
-      groundY - ripHeight + ripYOffset,
-      ripWidth,
-      ripHeight,
-    );
-  } else {
-    ctx.fillStyle = "#e63946";
-    ctx.fillRect(0, 0, 70, canvas.height);
-  }
 
   // Draw Player (The Book)
   if (bookImageLoaded) {
@@ -576,5 +551,7 @@ speedButtons.forEach((button) => {
 });
 
 selectSpeedButton(
-  document.querySelector(".speed-btn.is-selected") || speedButtons[1] || speedButtons[0],
+  document.querySelector(".speed-btn.is-selected") ||
+    speedButtons[1] ||
+    speedButtons[0],
 );
