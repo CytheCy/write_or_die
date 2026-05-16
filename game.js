@@ -52,21 +52,22 @@ bookImage.onload = () => {
 };
 bookImage.src = "assets/book.png";
 
-const cloudImagePaths = [
-  "assets/cloud01.png",
-  "assets/cloud02.png",
-  "assets/cloud03.png",
-  "assets/cloud04.png",
-  "assets/cloud05.png",
-  "assets/cloud06.png",
-  "assets/cloud07.png",
-  "assets/cloud08.png",
-];
-
-const cloudImages = cloudImagePaths.map((path) => {
+const cloudSprites = [
+  { path: "assets/cloud01.png", width: 366, height: 150 },
+  { path: "assets/cloud02.png", width: 216, height: 87 },
+  { path: "assets/cloud03.png", width: 256, height: 114 },
+  { path: "assets/cloud04.png", width: 297, height: 134 },
+  { path: "assets/cloud05.png", width: 373, height: 130 },
+  { path: "assets/cloud06.png", width: 252, height: 136 },
+  { path: "assets/cloud07.png", width: 271, height: 122 },
+  { path: "assets/cloud08.png", width: 247, height: 106 },
+].map((sprite) => {
   const image = new Image();
-  image.src = path;
-  return image;
+  image.src = sprite.path;
+  return {
+    ...sprite,
+    image,
+  };
 });
 
 const clouds = [];
@@ -81,16 +82,14 @@ function randomRange(min, max) {
 }
 
 function randomCloudImage() {
-  return cloudImages[Math.floor(Math.random() * cloudImages.length)];
+  return cloudSprites[Math.floor(Math.random() * cloudSprites.length)];
 }
 
 function spawnCloud(startingRight = false) {
-  const image = randomCloudImage();
-  const naturalWidth = image.naturalWidth || 256;
-  const naturalHeight = image.naturalHeight || 128;
+  const sprite = randomCloudImage();
   const scale = randomRange(CLOUD_SCALE_MIN, CLOUD_SCALE_MAX);
-  const width = naturalWidth * scale;
-  const height = naturalHeight * scale;
+  const width = sprite.width * scale;
+  const height = sprite.height * scale;
   const margin = 24;
   const x = startingRight
     ? canvas.width + randomRange(0, canvas.width * 0.35)
@@ -99,7 +98,7 @@ function spawnCloud(startingRight = false) {
   const speed = randomRange(CLOUD_SPEED_MIN, CLOUD_SPEED_MAX);
 
   return {
-    image,
+    image: sprite.image,
     x,
     y,
     width,
