@@ -12,7 +12,7 @@ html {
 :root {
     --desk-overlap: 90px;
     --editor-min-height: 470px;
-    --rip-y-offset: 90px;
+    --rip-y-offset: 80px;
 }
 
 #app-container {
@@ -71,7 +71,7 @@ html {
     position: absolute;
     left: 0;
     bottom: 0;
-    height: 400px;
+    height: 300px;
     width: auto;
     z-index: 2;
     transform: translateY(var(--rip-y-offset));
