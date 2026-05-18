@@ -22,9 +22,8 @@ html {
 }
 
 #game-container {
-    flex: 1 1 auto;
-    min-height: 120px;
-    max-height: calc(100vh - var(--editor-min-height));
+    flex: 0 0 clamp(190px, 25vh, 360px);
+    height: clamp(190px, 25vh, 360px);
     background: transparent;
     position: relative;
     z-index: 3;
@@ -343,6 +342,13 @@ html {
 @media (max-width: 900px) {
     :root {
         --editor-min-height: 390px;
+    }
+
+    #game-container {
+        flex: 1 1 auto;
+        min-height: 120px;
+        max-height: calc(100vh - var(--editor-min-height));
+        height: auto;
     }
 
     #typewriter-wrapper {
