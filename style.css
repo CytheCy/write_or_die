@@ -23,8 +23,8 @@ html {
 }
 
 #game-container {
-    flex: 0 0 clamp(170px, 24vh, 300px);
-    height: clamp(170px, 24vh, 300px);
+    flex: 0 0 clamp(220px, 32vh, 380px);
+    height: clamp(220px, 32vh, 380px);
     background: transparent;
     position: relative;
     z-index: 3;
