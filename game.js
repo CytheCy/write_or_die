@@ -44,29 +44,56 @@ function safePlay(audio) {
   }
 }
 
-// Load Player Image
-const bookImage = new Image();
-let bookImageLoaded = false;
-bookImage.onload = () => {
-  bookImageLoaded = true;
-};
-bookImage.src = "assets/book.png";
-
-const cloudImagePaths = [
-  "assets/cloud01.png",
-  "assets/cloud02.png",
-  "assets/cloud03.png",
-  "assets/cloud04.png",
-  "assets/cloud05.png",
-  "assets/cloud06.png",
-  "assets/cloud07.png",
-  "assets/cloud08.png",
+// Load Player Images (walking animation frames)
+const bookWalkFramePaths = [
+  "assets/book_walk1.png",
+  "assets/book_walk2.png",
+  "assets/book_walk3.png",
+  "assets/book_walk4.png",
 ];
-
-const cloudImages = cloudImagePaths.map((path) => {
+const bookWalkFrames = bookWalkFramePaths.map((path) => {
   const image = new Image();
   image.src = path;
   return image;
+});
+const bookStandImage = new Image();
+bookStandImage.src = "assets/book_stand.png";
+let bookWalkFramesLoaded = 0;
+let bookAspectRatio = 1;
+bookWalkFrames.forEach((image) => {
+  image.onload = () => {
+    bookWalkFramesLoaded += 1;
+    if (image.naturalWidth > 0 && image.naturalHeight > 0 && bookAspectRatio === 1) {
+      bookAspectRatio = image.naturalWidth / image.naturalHeight;
+    }
+  };
+});
+bookStandImage.onload = () => {
+  if (bookStandImage.naturalWidth > 0 && bookStandImage.naturalHeight > 0) {
+    bookAspectRatio = bookStandImage.naturalWidth / bookStandImage.naturalHeight;
+  }
+};
+let walkFrameIndex = 0;
+let walkFrameTicker = 0;
+const WALK_FRAME_TICK_INTERVAL = 6;
+let isMovingForward = false;
+
+const cloudSprites = [
+  { path: "assets/cloud01.png", width: 366, height: 150 },
+  { path: "assets/cloud02.png", width: 216, height: 87 },
+  { path: "assets/cloud03.png", width: 256, height: 114 },
+  { path: "assets/cloud04.png", width: 297, height: 134 },
+  { path: "assets/cloud05.png", width: 373, height: 130 },
+  { path: "assets/cloud06.png", width: 252, height: 136 },
+  { path: "assets/cloud07.png", width: 271, height: 122 },
+  { path: "assets/cloud08.png", width: 247, height: 106 },
+].map((sprite) => {
+  const image = new Image();
+  image.src = sprite.path;
+  return {
+    ...sprite,
+    image,
+  };
 });
 
 const clouds = [];
@@ -81,16 +108,14 @@ function randomRange(min, max) {
 }
 
 function randomCloudImage() {
-  return cloudImages[Math.floor(Math.random() * cloudImages.length)];
+  return cloudSprites[Math.floor(Math.random() * cloudSprites.length)];
 }
 
 function spawnCloud(startingRight = false) {
-  const image = randomCloudImage();
-  const naturalWidth = image.naturalWidth || 256;
-  const naturalHeight = image.naturalHeight || 128;
+  const sprite = randomCloudImage();
   const scale = randomRange(CLOUD_SCALE_MIN, CLOUD_SCALE_MAX);
-  const width = naturalWidth * scale;
-  const height = naturalHeight * scale;
+  const width = sprite.width * scale;
+  const height = sprite.height * scale;
   const margin = 24;
   const x = startingRight
     ? canvas.width + randomRange(0, canvas.width * 0.35)
@@ -99,7 +124,7 @@ function spawnCloud(startingRight = false) {
   const speed = randomRange(CLOUD_SPEED_MIN, CLOUD_SPEED_MAX);
 
   return {
-    image,
+    image: sprite.image,
     x,
     y,
     width,
@@ -293,6 +318,8 @@ textArea.addEventListener("input", (e) => {
 function update() {
   if (!gameStarted || isGameOver) return;
 
+  const previousX = player.x;
+
   // Environmental slide (pulls player to lava)
   player.x -= scrollSpeed;
 
@@ -303,6 +330,19 @@ function update() {
   // Bounds
   if (player.x > canvas.width - player.width)
     player.x = canvas.width - player.width;
+
+  isMovingForward = player.x > previousX;
+
+  if (isMovingForward) {
+    walkFrameTicker += 1;
+    if (walkFrameTicker >= WALK_FRAME_TICK_INTERVAL) {
+      walkFrameTicker = 0;
+      walkFrameIndex = (walkFrameIndex + 1) % bookWalkFrames.length;
+    }
+  } else {
+    walkFrameTicker = 0;
+    walkFrameIndex = 0;
+  }
 
   // Death Condition (Far Left Lava)
   if (player.x < 70) {
@@ -334,17 +374,44 @@ function draw() {
   drawClouds();
 
   // Draw Player (The Book)
-  if (bookImageLoaded) {
-    const bookAspectRatio = bookImage.naturalWidth / bookImage.naturalHeight;
-    const bookWidth = bookHeight * bookAspectRatio;
-    player.width = bookWidth;
-    ctx.drawImage(
-      bookImage,
-      player.x,
-      groundY - bookHeight,
-      bookWidth,
-      bookHeight,
-    );
+  if (bookWalkFramesLoaded > 0) {
+    const currentBookImage = isMovingForward
+      ? bookWalkFrames[walkFrameIndex]?.complete &&
+        bookWalkFrames[walkFrameIndex].naturalHeight > 0
+        ? bookWalkFrames[walkFrameIndex]
+        : bookWalkFrames.find(
+            (frame) => frame.complete && frame.naturalHeight > 0,
+          )
+      : bookStandImage.complete && bookStandImage.naturalHeight > 0
+      ? bookStandImage
+      : bookWalkFrames.find((frame) => frame.complete && frame.naturalHeight > 0);
+
+    if (currentBookImage) {
+      if (
+        currentBookImage.naturalWidth > 0 &&
+        currentBookImage.naturalHeight > 0
+      ) {
+        bookAspectRatio =
+          currentBookImage.naturalWidth / currentBookImage.naturalHeight;
+      }
+      const bookWidth = bookHeight * bookAspectRatio;
+      player.width = bookWidth;
+      ctx.drawImage(
+        currentBookImage,
+        player.x,
+        groundY - bookHeight,
+        bookWidth,
+        bookHeight,
+      );
+    } else {
+      ctx.fillStyle = "#1d1d1f";
+      ctx.fillRect(
+        player.x,
+        groundY - player.height,
+        player.width,
+        player.height,
+      );
+    }
   } else {
     // Fallback placeholder while loading
     ctx.fillStyle = "#1d1d1f";
