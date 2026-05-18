@@ -18,12 +18,13 @@ html {
 #app-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100dvh;
+    height: 100dvh;
 }
 
 #game-container {
-    flex: 0 0 clamp(190px, 25vh, 360px);
-    height: clamp(190px, 25vh, 360px);
+    flex: 0 0 clamp(170px, 24vh, 300px);
+    height: clamp(170px, 24vh, 300px);
     background: transparent;
     position: relative;
     z-index: 3;
@@ -37,7 +38,7 @@ html {
 
 /* Typewriter Section */
 #editor-container {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
     min-height: var(--editor-min-height);
     background: #557064;
     display: flex;
@@ -80,7 +81,7 @@ html {
 
 #typewriter-wrapper {
     position: relative;
-    width: min(1000px, 100vw);
+    width: min(900px, 96vw);
     max-width: 100%;
     /* Adjust based on your image width */
     padding-top: 150px;
