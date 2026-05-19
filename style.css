@@ -43,8 +43,8 @@ html {
     background: #557064;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    /* Keeps typewriter at bottom */
+    align-items: flex-start;
+    /* Keeps typewriter wrapper against game section */
     padding-bottom: 0px;
     position: relative;
     z-index: 2;
