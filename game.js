@@ -28,22 +28,6 @@ function refocusWriterSoon() {
   setTimeout(focusWriter, 0);
 }
 
-// Load Typewriter Sound
-const typeSound = new Audio(
-  "https://www.soundjay.com/communication/typewriter-key-1.mp3",
-);
-const bellSound = new Audio(
-  "https://www.soundjay.com/communication/typewriter-bell-1.mp3",
-);
-
-function safePlay(audio) {
-  if (!audio) return;
-  const playResult = audio.play();
-  if (playResult && typeof playResult.catch === "function") {
-    playResult.catch(() => {});
-  }
-}
-
 // Load Player Images (walking animation frames)
 const bookWalkFramePaths = [
   "assets/book_walk1.png",
@@ -279,16 +263,6 @@ textArea.addEventListener("input", (e) => {
     gameStarted = true;
   }
   startTimerIfNeeded();
-
-  // Play Sound
-  typeSound.currentTime = 0;
-  typeSound.volume = 0.3;
-  safePlay(typeSound);
-
-  // If they hit space or enter, play the 'bell' sound
-  if (e.inputType === "insertLineBreak") {
-    safePlay(bellSound);
-  }
 
   // Character Boost: only advance on insertion, not deletion.
   if (e.inputType && e.inputType.startsWith("insert")) {
