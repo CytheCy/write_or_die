@@ -1,3 +1,5 @@
+const skyCanvas = document.getElementById("skyCanvas");
+const skyCtx = skyCanvas?.getContext("2d");
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas?.getContext("2d");
 const textArea = document.getElementById("writer");
@@ -8,6 +10,8 @@ const gameOverOverlay = document.getElementById("game-over-overlay");
 const gameWinOverlay = document.getElementById("game-win-overlay");
 
 if (
+  !skyCanvas ||
+  !skyCtx ||
   !canvas ||
   !ctx ||
   !textArea ||
@@ -135,16 +139,18 @@ function updateClouds() {
   }
 }
 
-function drawClouds() {
+function drawClouds(targetCtx) {
   for (let i = 0; i < clouds.length; i += 1) {
     const cloud = clouds[i];
     if (!cloud.image.complete) continue;
-    ctx.drawImage(cloud.image, cloud.x, cloud.y, cloud.width, cloud.height);
+    targetCtx.drawImage(cloud.image, cloud.x, cloud.y, cloud.width, cloud.height);
   }
 }
 
 // 1. Setup & Sizing
 function resize() {
+  skyCanvas.width = skyCanvas.clientWidth;
+  skyCanvas.height = skyCanvas.clientHeight;
   canvas.width = canvas.clientWidth;
   canvas.height = canvas.clientHeight;
   // Set starting position to far right
@@ -331,21 +337,21 @@ function update() {
 // 4. Drawing the Visuals
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const deskOverlapRaw = getComputedStyle(
-    document.documentElement,
-  ).getPropertyValue("--desk-overlap");
-  const deskOverlap = Number.parseInt(deskOverlapRaw, 10) || 90;
-  const visibleSkyHeight = Math.max(0, canvas.height - deskOverlap);
+  const visibleSkyHeight = skyCanvas.height;
   const groundY = canvas.height - 50;
   const bookHeight = player.height;
 
-  // Draw Sky
-  ctx.fillStyle = "#a8d1df";
-  ctx.fillRect(0, 0, canvas.width, visibleSkyHeight);
+  // Draw Sky + Clouds (background layer)
+  skyCtx.clearRect(0, 0, skyCanvas.width, skyCanvas.height);
+  skyCtx.fillStyle = "#a8d1df";
+  skyCtx.fillRect(0, 0, skyCanvas.width, visibleSkyHeight);
 
-  // Draw moving clouds behind hazards/player
+  // Draw moving clouds behind player
   updateClouds();
-  drawClouds();
+  drawClouds(skyCtx);
+
+  // Draw foreground gameplay layer (book)
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw Player (The Book)
   if (bookWalkFramesLoaded > 0) {
