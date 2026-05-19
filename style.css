@@ -340,7 +340,7 @@ html {
     margin-right: 36px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     :root {
         --editor-min-height: 390px;
     }
