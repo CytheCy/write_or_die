@@ -96,6 +96,32 @@ html {
     image-rendering: pixelated;
 }
 
+#explosion-overlay {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 300px;
+    width: auto;
+    z-index: 4;
+    transform: translate(-120px, calc(var(--rip-y-offset) - 40px));
+    pointer-events: none;
+    image-rendering: pixelated;
+    opacity: 0;
+}
+
+#explosion-overlay.is-active {
+    animation: explosion-fade 1s linear forwards;
+}
+
+@keyframes explosion-fade {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 #typewriter-wrapper {
     position: relative;
     width: min(900px, 96vw);

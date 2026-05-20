@@ -8,6 +8,7 @@ const saveConfirmYesBtn = document.getElementById("saveConfirmYesBtn");
 const saveConfirmNoBtn = document.getElementById("saveConfirmNoBtn");
 const gameOverOverlay = document.getElementById("game-over-overlay");
 const gameWinOverlay = document.getElementById("game-win-overlay");
+const explosionOverlay = document.getElementById("explosion-overlay");
 
 if (
   !skyCanvas ||
@@ -19,7 +20,8 @@ if (
   !saveConfirmYesBtn ||
   !saveConfirmNoBtn ||
   !gameOverOverlay ||
-  !gameWinOverlay
+  !gameWinOverlay ||
+  !explosionOverlay
 ) {
   throw new Error("Missing required DOM elements for game startup.");
 }
@@ -173,6 +175,8 @@ let remainingSeconds = 10 * 60;
 let selectedMinutes = 10;
 let hasCopiedCurrentText = false;
 let in20xxCheatCountApplied = 0;
+let shouldHideBook = false;
+let hasPlayedRipExplosion = false;
 
 let player = {
   x: 0,
@@ -220,6 +224,15 @@ function stopTimer() {
 function showGameOverOverlay() {
   gameOverOverlay.classList.add("is-visible");
   gameOverOverlay.setAttribute("aria-hidden", "false");
+}
+
+function playRipExplosion() {
+  if (hasPlayedRipExplosion) return;
+  hasPlayedRipExplosion = true;
+  shouldHideBook = true;
+  explosionOverlay.classList.remove("is-active");
+  void explosionOverlay.offsetWidth;
+  explosionOverlay.classList.add("is-active");
 }
 
 function hideGameOverOverlay() {
@@ -328,6 +341,7 @@ function update() {
   if (player.x < 70) {
     if (!isGameOver) {
       isGameOver = true;
+      playRipExplosion();
       stopTimer();
       showGameOverOverlay();
     }
@@ -354,7 +368,7 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw Player (The Book)
-  if (bookWalkFramesLoaded > 0) {
+  if (!shouldHideBook && bookWalkFramesLoaded > 0) {
     const currentBookImage = isMovingForward
       ? bookWalkFrames[walkFrameIndex]?.complete &&
         bookWalkFrames[walkFrameIndex].naturalHeight > 0
@@ -392,7 +406,7 @@ function draw() {
         player.height,
       );
     }
-  } else {
+  } else if (!shouldHideBook) {
     // Fallback placeholder while loading
     ctx.fillStyle = "#1d1d1f";
     ctx.fillRect(
