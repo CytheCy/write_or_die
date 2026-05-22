@@ -31,7 +31,7 @@
                 <img src="assets/RIP.png" id="rip-overlay" alt="" aria-hidden="true">
                 <nav id="rip-hover-menu" aria-label="RIP links">
                     <a class="rip-hover-link" id="shareLink" href="#" aria-controls="share-popup" aria-expanded="false">SHARE</a>
-                    <a class="rip-hover-link" href="#contact">CONTACT</a>
+                    <a class="rip-hover-link" id="contactLink" href="#" aria-controls="contact-popup" aria-expanded="false">CONTACT</a>
                     <a class="rip-hover-link" href="about.html" target="_blank" rel="noopener noreferrer">ABOUT</a>
                 </nav>
             </div>
@@ -91,6 +91,20 @@
                         <a class="a2a_button_copy_link"></a>
                     </div>
                     <!-- AddToAny END -->
+                </div>
+            </div>
+            <div id="contact-popup" aria-hidden="true">
+                <div id="contact-popup-panel" role="dialog" aria-modal="true" aria-labelledby="contact-popup-title">
+                    <button id="contact-popup-close" type="button" aria-label="Close contact form">X</button>
+                    <p id="contact-popup-title">Contact</p>
+                    <form id="contact-form">
+                        <label for="contact-email">Your Email</label>
+                        <input id="contact-email" name="senderEmail" type="email" required autocomplete="email">
+                        <label for="contact-message">Message</label>
+                        <textarea id="contact-message" name="message" required rows="5"></textarea>
+                        <button id="contact-send-btn" type="submit">Send</button>
+                        <p id="contact-status" aria-live="polite"></p>
+                    </form>
                 </div>
             </div>
         </div>

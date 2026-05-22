@@ -16,6 +16,15 @@ const shareLink = document.getElementById("shareLink");
 const sharePopup = document.getElementById("share-popup");
 const sharePopupPanel = document.getElementById("share-popup-panel");
 const sharePopupClose = document.getElementById("share-popup-close");
+const contactLink = document.getElementById("contactLink");
+const contactPopup = document.getElementById("contact-popup");
+const contactPopupPanel = document.getElementById("contact-popup-panel");
+const contactPopupClose = document.getElementById("contact-popup-close");
+const contactForm = document.getElementById("contact-form");
+const contactEmailInput = document.getElementById("contact-email");
+const contactMessageInput = document.getElementById("contact-message");
+const contactSendBtn = document.getElementById("contact-send-btn");
+const contactStatus = document.getElementById("contact-status");
 
 if (
   !skyCanvas ||
@@ -35,7 +44,16 @@ if (
   !shareLink ||
   !sharePopup ||
   !sharePopupPanel ||
-  !sharePopupClose
+  !sharePopupClose ||
+  !contactLink ||
+  !contactPopup ||
+  !contactPopupPanel ||
+  !contactPopupClose ||
+  !contactForm ||
+  !contactEmailInput ||
+  !contactMessageInput ||
+  !contactSendBtn ||
+  !contactStatus
 ) {
   throw new Error("Missing required DOM elements for game startup.");
 }
@@ -52,7 +70,16 @@ function isSharePopupOpen() {
   return sharePopup.classList.contains("is-visible");
 }
 
+function isContactPopupOpen() {
+  return contactPopup.classList.contains("is-visible");
+}
+
+function isOverlayOpen() {
+  return isSharePopupOpen() || isContactPopupOpen();
+}
+
 function openSharePopup() {
+  closeContactPopup(false);
   sharePopup.classList.add("is-visible");
   sharePopup.setAttribute("aria-hidden", "false");
   shareLink.setAttribute("aria-expanded", "true");
@@ -63,6 +90,26 @@ function closeSharePopup() {
   sharePopup.setAttribute("aria-hidden", "true");
   shareLink.setAttribute("aria-expanded", "false");
   refocusWriterSoon();
+}
+
+function openContactPopup() {
+  closeSharePopup();
+  contactPopup.classList.add("is-visible");
+  contactPopup.setAttribute("aria-hidden", "false");
+  contactLink.setAttribute("aria-expanded", "true");
+  setTimeout(() => {
+    contactEmailInput.focus({ preventScroll: true });
+  }, 0);
+}
+
+function closeContactPopup(shouldRefocus = true) {
+  contactPopup.classList.remove("is-visible");
+  contactPopup.setAttribute("aria-hidden", "true");
+  contactLink.setAttribute("aria-expanded", "false");
+  contactStatus.textContent = "";
+  if (shouldRefocus) {
+    refocusWriterSoon();
+  }
 }
 
 function isFullscreenActive() {
@@ -511,7 +558,7 @@ window.addEventListener("load", () => {
 
 // Keep typing focus after clicks outside the textarea (including control buttons).
 document.addEventListener("click", (event) => {
-  if (isSharePopupOpen()) {
+  if (isOverlayOpen()) {
     return;
   }
   if (event.target !== textArea) {
@@ -669,8 +716,85 @@ sharePopup.addEventListener("click", (event) => {
   }
 });
 
+contactLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (isContactPopupOpen()) {
+    closeContactPopup();
+    return;
+  }
+  openContactPopup();
+});
+
+contactPopupClose.addEventListener("click", () => {
+  closeContactPopup();
+});
+
+contactPopup.addEventListener("click", (event) => {
+  if (event.target === contactPopup) {
+    closeContactPopup();
+  }
+});
+
+contactForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (!contactForm.reportValidity()) {
+    return;
+  }
+
+  const senderEmail = contactEmailInput.value.trim();
+  const message = contactMessageInput.value.trim();
+  if (!senderEmail || !message) {
+    return;
+  }
+
+  contactSendBtn.disabled = true;
+  contactSendBtn.textContent = "Sending...";
+  contactStatus.textContent = "";
+
+  fetch("https://formsubmit.co/ajax/cyporter@in20xx.com", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      email: senderEmail,
+      message,
+      _subject: "Draft or Die Contact Form",
+      _captcha: "false",
+      _template: "table",
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to send message.");
+      }
+      return response.json();
+    })
+    .then(() => {
+      contactStatus.textContent = "Message sent.";
+      contactForm.reset();
+      setTimeout(() => {
+        closeContactPopup();
+      }, 700);
+    })
+    .catch(() => {
+      contactStatus.textContent =
+        "Send failed. Try again in a moment.";
+    })
+    .finally(() => {
+      contactSendBtn.disabled = false;
+      contactSendBtn.textContent = "Send";
+    });
+});
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && isSharePopupOpen()) {
+  if (event.key !== "Escape") return;
+  if (isContactPopupOpen()) {
+    closeContactPopup();
+    return;
+  }
+  if (isSharePopupOpen()) {
     closeSharePopup();
   }
 });
