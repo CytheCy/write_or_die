@@ -14,7 +14,14 @@
         </div>
         <div id="game-foreground" aria-hidden="true">
             <canvas id="gameCanvas"></canvas>
-            <img src="assets/RIP.png" id="rip-overlay" alt="" aria-hidden="true">
+            <div id="rip-menu-wrapper">
+                <img src="assets/RIP.png" id="rip-overlay" alt="" aria-hidden="true">
+                <nav id="rip-hover-menu" aria-label="RIP links">
+                    <a class="rip-hover-link" href="#share">SHARE</a>
+                    <a class="rip-hover-link" href="#contact">CONTACT</a>
+                    <a class="rip-hover-link" href="#about">ABOUT</a>
+                </nav>
+            </div>
             <img src="assets/explosion.png" id="explosion-overlay" alt="" aria-hidden="true">
             <img src="assets/rose.png" id="rose-overlay" alt="" aria-hidden="true">
         </div>
