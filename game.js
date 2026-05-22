@@ -12,6 +12,10 @@ const explosionOverlay = document.getElementById("explosion-overlay");
 const roseOverlay = document.getElementById("rose-overlay");
 const appContainer = document.getElementById("app-container");
 const fullscreenBtn = document.getElementById("fullscreen-btn");
+const shareLink = document.getElementById("shareLink");
+const sharePopup = document.getElementById("share-popup");
+const sharePopupPanel = document.getElementById("share-popup-panel");
+const sharePopupClose = document.getElementById("share-popup-close");
 
 if (
   !skyCanvas ||
@@ -27,7 +31,11 @@ if (
   !explosionOverlay ||
   !roseOverlay ||
   !appContainer ||
-  !fullscreenBtn
+  !fullscreenBtn ||
+  !shareLink ||
+  !sharePopup ||
+  !sharePopupPanel ||
+  !sharePopupClose
 ) {
   throw new Error("Missing required DOM elements for game startup.");
 }
@@ -38,6 +46,23 @@ function focusWriter() {
 
 function refocusWriterSoon() {
   setTimeout(focusWriter, 0);
+}
+
+function isSharePopupOpen() {
+  return sharePopup.classList.contains("is-visible");
+}
+
+function openSharePopup() {
+  sharePopup.classList.add("is-visible");
+  sharePopup.setAttribute("aria-hidden", "false");
+  shareLink.setAttribute("aria-expanded", "true");
+}
+
+function closeSharePopup() {
+  sharePopup.classList.remove("is-visible");
+  sharePopup.setAttribute("aria-hidden", "true");
+  shareLink.setAttribute("aria-expanded", "false");
+  refocusWriterSoon();
 }
 
 function isFullscreenActive() {
@@ -486,6 +511,9 @@ window.addEventListener("load", () => {
 
 // Keep typing focus after clicks outside the textarea (including control buttons).
 document.addEventListener("click", (event) => {
+  if (isSharePopupOpen()) {
+    return;
+  }
   if (event.target !== textArea) {
     refocusWriterSoon();
   }
@@ -620,6 +648,31 @@ document.getElementById("in20xxBtn").addEventListener("click", () => {
 
 fullscreenBtn.addEventListener("click", () => {
   toggleFullscreen();
+});
+
+shareLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (isSharePopupOpen()) {
+    closeSharePopup();
+    return;
+  }
+  openSharePopup();
+});
+
+sharePopupClose.addEventListener("click", () => {
+  closeSharePopup();
+});
+
+sharePopup.addEventListener("click", (event) => {
+  if (event.target === sharePopup) {
+    closeSharePopup();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && isSharePopupOpen()) {
+    closeSharePopup();
+  }
 });
 
 document.addEventListener("fullscreenchange", updateFullscreenButtonState);
