@@ -113,12 +113,44 @@ html {
     animation: explosion-fade 1s linear forwards;
 }
 
+#rose-overlay {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 28px;
+    width: auto;
+    z-index: 3;
+    pointer-events: none;
+    image-rendering: pixelated;
+    opacity: 0;
+    transform: translate(64px, -130vh) rotate(12deg);
+}
+
+#rose-overlay.is-active {
+    animation: rose-drop 1.1s cubic-bezier(0.25, 0.8, 0.22, 1) forwards;
+}
+
 @keyframes explosion-fade {
     0% {
         opacity: 1;
     }
     100% {
         opacity: 0;
+    }
+}
+
+@keyframes rose-drop {
+    0% {
+        opacity: 1;
+        transform: translate(64px, -130vh) rotate(12deg);
+    }
+    82% {
+        opacity: 1;
+        transform: translate(64px, calc(var(--rip-y-offset) - 64px)) rotate(12deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(64px, calc(var(--rip-y-offset) - 72px)) rotate(12deg);
     }
 }
 

@@ -9,6 +9,7 @@ const saveConfirmNoBtn = document.getElementById("saveConfirmNoBtn");
 const gameOverOverlay = document.getElementById("game-over-overlay");
 const gameWinOverlay = document.getElementById("game-win-overlay");
 const explosionOverlay = document.getElementById("explosion-overlay");
+const roseOverlay = document.getElementById("rose-overlay");
 
 if (
   !skyCanvas ||
@@ -21,7 +22,8 @@ if (
   !saveConfirmNoBtn ||
   !gameOverOverlay ||
   !gameWinOverlay ||
-  !explosionOverlay
+  !explosionOverlay ||
+  !roseOverlay
 ) {
   throw new Error("Missing required DOM elements for game startup.");
 }
@@ -230,9 +232,15 @@ function playRipExplosion() {
   if (hasPlayedRipExplosion) return;
   hasPlayedRipExplosion = true;
   shouldHideBook = true;
+  roseOverlay.classList.remove("is-active");
   explosionOverlay.classList.remove("is-active");
   void explosionOverlay.offsetWidth;
   explosionOverlay.classList.add("is-active");
+  setTimeout(() => {
+    roseOverlay.classList.remove("is-active");
+    void roseOverlay.offsetWidth;
+    roseOverlay.classList.add("is-active");
+  }, 2000);
 }
 
 function hideGameOverOverlay() {
