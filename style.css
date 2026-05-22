@@ -23,6 +23,33 @@ html {
     height: 100dvh;
 }
 
+#fullscreen-btn {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    width: 44px;
+    height: 44px;
+    border: 3px solid #000;
+    background: #e0e0e0;
+    box-shadow: 3px 3px 0 #000;
+    color: #000;
+    font-size: 22px;
+    line-height: 1;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 20;
+}
+
+#fullscreen-btn:hover {
+    background-color: #d0d0d0;
+}
+
+#fullscreen-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 #000;
+}
+
 #game-container {
     flex: 0 0 clamp(220px, 32vh, 380px);
     height: clamp(220px, 32vh, 380px);

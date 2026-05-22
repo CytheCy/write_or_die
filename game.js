@@ -10,6 +10,8 @@ const gameOverOverlay = document.getElementById("game-over-overlay");
 const gameWinOverlay = document.getElementById("game-win-overlay");
 const explosionOverlay = document.getElementById("explosion-overlay");
 const roseOverlay = document.getElementById("rose-overlay");
+const appContainer = document.getElementById("app-container");
+const fullscreenBtn = document.getElementById("fullscreen-btn");
 
 if (
   !skyCanvas ||
@@ -23,7 +25,9 @@ if (
   !gameOverOverlay ||
   !gameWinOverlay ||
   !explosionOverlay ||
-  !roseOverlay
+  !roseOverlay ||
+  !appContainer ||
+  !fullscreenBtn
 ) {
   throw new Error("Missing required DOM elements for game startup.");
 }
@@ -34,6 +38,48 @@ function focusWriter() {
 
 function refocusWriterSoon() {
   setTimeout(focusWriter, 0);
+}
+
+function isFullscreenActive() {
+  return (
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.msFullscreenElement
+  );
+}
+
+function updateFullscreenButtonState() {
+  const active = Boolean(isFullscreenActive());
+  fullscreenBtn.textContent = active ? "🗗" : "⛶";
+  fullscreenBtn.setAttribute(
+    "aria-label",
+    active ? "Exit fullscreen mode" : "Enter fullscreen mode",
+  );
+  fullscreenBtn.title = active ? "Exit Fullscreen" : "Fullscreen";
+}
+
+async function toggleFullscreen() {
+  const activeElement = isFullscreenActive();
+
+  try {
+    if (!activeElement) {
+      if (appContainer.requestFullscreen) {
+        await appContainer.requestFullscreen();
+      } else if (appContainer.webkitRequestFullscreen) {
+        appContainer.webkitRequestFullscreen();
+      } else if (appContainer.msRequestFullscreen) {
+        appContainer.msRequestFullscreen();
+      }
+    } else if (document.exitFullscreen) {
+      await document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  } catch (error) {
+    console.error("Fullscreen toggle failed:", error);
+  }
 }
 
 // Load Player Images (walking animation frames)
@@ -571,6 +617,15 @@ document.getElementById("newGameBtn").addEventListener("click", async () => {
 document.getElementById("in20xxBtn").addEventListener("click", () => {
   window.open("https://in20xx.com", "_blank", "noopener,noreferrer");
 });
+
+fullscreenBtn.addEventListener("click", () => {
+  toggleFullscreen();
+});
+
+document.addEventListener("fullscreenchange", updateFullscreenButtonState);
+document.addEventListener("webkitfullscreenchange", updateFullscreenButtonState);
+document.addEventListener("MSFullscreenChange", updateFullscreenButtonState);
+updateFullscreenButtonState();
 
 // Time Button Group Logic (single-select)
 const timeButtons = document.querySelectorAll(".time-btn");
