@@ -21,6 +21,7 @@ html {
     flex-direction: column;
     min-height: 100dvh;
     height: 100dvh;
+    overflow: hidden;
 }
 
 #fullscreen-btn {
@@ -84,24 +85,26 @@ html {
 #editor-container {
     flex: 1 1 auto;
     min-height: var(--editor-min-height);
-    background: #557064;
+    background: #a8d1df;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    /* Keeps typewriter wrapper against game section */
+    margin-top: calc(-1 * var(--desk-overlap));
+    padding-top: var(--desk-overlap);
+    box-sizing: border-box;
     padding-bottom: 0px;
     position: relative;
     z-index: 2;
-    overflow: visible;
+    overflow: hidden;
 }
 
 #desk-bg {
     position: absolute;
-    top: calc(-1 * var(--desk-overlap));
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    height: calc(100% + var(--desk-overlap));
+    height: 100%;
     z-index: 1;
     pointer-events: none;
     background-image: url("assets/desk.png");
