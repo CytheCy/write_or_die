@@ -760,7 +760,7 @@ contactForm.addEventListener("submit", (event) => {
     body: JSON.stringify({
       email: senderEmail,
       message,
-      _subject: "Draft or Die Contact Form",
+      _subject: "Writing Dash Contact Form",
       _captcha: "false",
       _template: "table",
     }),

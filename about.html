@@ -8,12 +8,12 @@
        SEO: Primary meta tags
   ═══════════════════════════════════════════ -->
         <title>
-            About Draft or Die — The Freewriting Game That Silences Your Inner
+            About Writing Dash — The Freewriting Game That Silences Your Inner
             Critic
         </title>
         <meta
             name="description"
-            content="Draft or Die is a free browser-based freewriting game for writers. Keep typing to keep your story alive. Silence your inner critic, beat writer's block, and reach a flow state."
+            content="Writing Dash is a free browser-based freewriting game for writers. Keep typing to keep your story alive. Silence your inner critic, beat writer's block, and reach a flow state."
         />
         <meta
             name="keywords"
@@ -28,11 +28,11 @@
         <meta property="og:type" content="website" />
         <meta
             property="og:title"
-            content="Draft or Die — The Freewriting Game That Silences Your Inner Critic"
+            content="Writing Dash — The Freewriting Game That Silences Your Inner Critic"
         />
         <meta
             property="og:description"
-            content="Draft or Die is a browser-based typing game for writers. Keep writing — keep your character alive. Stop, and the inner critic wins. Beat writer's block through play."
+            content="Writing Dash is a browser-based typing game for writers. Keep writing — keep your character alive. Stop, and the inner critic wins. Beat writer's block through play."
         />
         <meta property="og:url" content="https://your-domain/about" />
         <meta property="og:image" content="https://your-domain/og-image.png" />
@@ -53,7 +53,7 @@
             {
                 "@context": "https://schema.org",
                 "@type": "SoftwareApplication",
-                "name": "Draft or Die",
+                "name": "Writing Dash",
                 "applicationCategory": "WritingApplication",
                 "operatingSystem": "Web Browser",
                 "offers": {
@@ -397,6 +397,50 @@
                 color: var(--ink-light);
             }
 
+            .visitor-counter {
+                display: inline-flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.35rem;
+                margin-top: 1.5rem;
+                padding: 0.7rem 0.8rem 0.8rem;
+                background: #d9d5c8;
+                border: 3px ridge #f6f1e7;
+                box-shadow:
+                    inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+                    3px 3px 0 rgba(0, 0, 0, 0.2);
+                color: #0a160a;
+                text-align: center;
+            }
+
+            .visitor-counter-label {
+                font-family: "Courier New", Courier, monospace;
+                font-size: 0.65rem;
+                font-weight: 700;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: #5c5c49;
+            }
+
+            .visitor-counter-screen {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 12ch;
+                padding: 0.45rem 0.75rem;
+                background: linear-gradient(180deg, #070707 0%, #151515 100%);
+                border: 2px inset #7b7b6a;
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+                color: #7dff63;
+                font-family: "Courier New", Courier, monospace;
+                font-size: 1rem;
+                font-weight: 700;
+                font-variant-numeric: tabular-nums;
+                letter-spacing: 0.12em;
+                line-height: 1;
+                text-shadow: 0 0 8px rgba(125, 255, 99, 0.25);
+            }
+
             footer a {
                 color: var(--ink-mid);
                 text-decoration: underline;
@@ -453,7 +497,7 @@
         </style>
     </head>
 
-    <body>
+    <body data-page="about">
         <!-- ═══════════════════════════════════════════
        HERO
   ═══════════════════════════════════════════ -->
@@ -478,9 +522,9 @@
         <main>
             <!-- 1. WHAT IS IT -->
             <section id="what-is-it" aria-labelledby="h-what">
-                <h2 id="h-what">What is Draft or Die?</h2>
+                <h2 id="h-what">What is Writing Dash?</h2>
                 <p>
-                    <strong>Draft or Die</strong> is a free, browser-based
+                    <strong>Writing Dash</strong> is a free, browser-based
                     freewriting game for writers. A small book character walks
                     across the screen. As long as you keep typing, the book
                     walks forward — alive, curious, moving toward the horizon.
@@ -495,7 +539,7 @@
                     trains that exact muscle.
                 </p>
                 <p>
-                    Draft or Die was created to fill the gap left by Write or
+                    Writing Dash was created to fill the gap left by Write or
                     Die, a writing tool that helped countless writers push
                     through procrastination and blank-page paralysis. It
                     continues the spirit of fast focused writing in a simple
@@ -694,7 +738,7 @@
 
                 <p>
                     <strong>How long should my sessions be?</strong><br />
-                    Draft or Die offers sessions of 5, 10, 15, or 30 minutes.
+                    Writing Dash offers sessions of 5, 10, 15, or 30 minutes.
                     Most writers start with 5–10 minutes and work up from there
                     as the habit builds.
                 </p>
@@ -709,9 +753,15 @@
                 <a href="https://writeordie.in20xx.com">Play</a>
             </nav>
             <p>
-                © <span id="yr"></span> Draft or Die — A free freewriting game
+                © <span id="yr"></span> Writing Dash — A free freewriting game
                 for writers.
             </p>
+            <div class="visitor-counter" aria-label="Visitor counter">
+                <span class="visitor-counter-label">Visitors</span>
+                <span class="visitor-counter-screen"
+                    ><span data-visitor-count>000000</span></span
+                >
+            </div>
         </footer>
 
         <!-- ═══════════════════════════════════════════
@@ -731,5 +781,6 @@
             );
             sections.forEach((s) => observer.observe(s));
         </script>
+        <script src="visitor-counter.js"></script>
     </body>
 </html>
