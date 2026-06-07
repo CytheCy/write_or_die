@@ -19,6 +19,12 @@
     });
   }
 
+  function parseCounterValue(payload) {
+    const value =
+      payload?.count ?? payload?.value ?? payload?.data?.count ?? payload?.data?.value ?? 0;
+    return Number(value) || 0;
+  }
+
   async function fetchCounter() {
     const response = await fetch(`${COUNTER_BASE_URL}/?t=${Date.now()}`, {
       cache: "no-store",
@@ -29,8 +35,7 @@
     }
 
     const payload = await response.json();
-    const value = payload?.count ?? payload?.value ?? payload?.data?.count ?? payload?.data?.value ?? 0;
-    return Number(value) || 0;
+    return parseCounterValue(payload);
   }
 
   function hasCountedVisit() {
@@ -59,7 +64,7 @@
 
   async function incrementCounter() {
     if (hasCountedVisit()) {
-      return;
+      return null;
     }
 
     markVisitCounted();
@@ -72,6 +77,20 @@
       clearVisitCounted();
       throw new Error(`Counter increment failed with ${response.status}`);
     }
+
+    try {
+      const payload = await response.json();
+      const value = parseCounterValue(payload);
+      if (value > 0) {
+        setCounterDisplay(value);
+        return value;
+      }
+    } catch (error) {
+      // Some counter APIs return no JSON body for increment requests.
+      // Fall back to a normal refresh below.
+    }
+
+    return null;
   }
 
   async function refreshCounter() {
@@ -86,7 +105,10 @@
   document.addEventListener("DOMContentLoaded", async () => {
     if (PAGE_KEY === "index") {
       try {
-        await incrementCounter();
+        const incrementedValue = await incrementCounter();
+        if (incrementedValue !== null) {
+          return;
+        }
       } catch (error) {
         console.error(error);
       }
