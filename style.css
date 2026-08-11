@@ -63,6 +63,10 @@ html {
     box-sizing: border-box;
 }
 
+#intro-popup[hidden] {
+    display: none;
+}
+
 #intro-popup.is-visible {
     display: flex;
 }

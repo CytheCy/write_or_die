@@ -81,11 +81,38 @@ function markIntroPopupSeen() {
   }
 }
 
+function applyIntroPopupRuntimeStyles() {
+  Object.assign(introPopup.style, {
+    position: "fixed",
+    inset: "0",
+    zIndex: "100",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "18px",
+    background: "rgba(0, 0, 0, 0.35)",
+    boxSizing: "border-box",
+  });
+
+  Object.assign(introPopupPanel.style, {
+    width: "min(560px, calc(100vw - 36px))",
+    backgroundColor: "#e0e0e0",
+    color: "#000",
+    border: "4px solid #000",
+    boxShadow: "4px 4px 0 #000",
+    fontFamily: '"Courier New", Courier, monospace',
+    padding: "22px 26px",
+    boxSizing: "border-box",
+  });
+}
+
 function showIntroPopupIfNeeded() {
   if (hasSeenIntroPopup()) return;
 
+  applyIntroPopupRuntimeStyles();
   isIntroPopupOpen = true;
+  introPopup.hidden = false;
   introPopup.classList.add("is-visible");
+  introPopup.style.display = "flex";
   introPopup.setAttribute("aria-hidden", "false");
   setTimeout(() => {
     introPopupPanel.focus({ preventScroll: true });
@@ -102,7 +129,9 @@ function hideIntroPopup(event) {
 
   isIntroPopupOpen = false;
   introPopup.classList.remove("is-visible");
+  introPopup.style.display = "none";
   introPopup.setAttribute("aria-hidden", "true");
+  introPopup.hidden = true;
   markIntroPopupSeen();
   refocusWriterSoon();
 }
