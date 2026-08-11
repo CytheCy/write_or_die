@@ -65,7 +65,13 @@ if (
 const INTRO_POPUP_SEEN_KEY = "writingDashIntroSeen";
 let isIntroPopupOpen = false;
 
+function shouldForceIntroPopup() {
+  return new URLSearchParams(window.location.search).has("intro");
+}
+
 function hasSeenIntroPopup() {
+  if (shouldForceIntroPopup()) return false;
+
   try {
     return window.localStorage.getItem(INTRO_POPUP_SEEN_KEY) === "true";
   } catch {
