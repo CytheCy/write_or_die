@@ -51,6 +51,98 @@ html {
     box-shadow: 0 0 0 #000;
 }
 
+#intro-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(0, 0, 0, 0.35);
+    box-sizing: border-box;
+}
+
+#intro-popup.is-visible {
+    display: flex;
+}
+
+#intro-popup-panel {
+    width: min(560px, calc(100vw - 36px));
+    background-color: #e0e0e0;
+    color: #000;
+    border: 4px solid #000;
+    box-shadow: 4px 4px 0 #000;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 15px;
+    line-height: 1.45;
+    padding: 22px 26px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+#intro-popup-panel::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    pointer-events: none;
+    border: 2px solid #000;
+    clip-path: polygon(
+        0 8px,
+        2px 8px,
+        2px 4px,
+        4px 4px,
+        4px 2px,
+        8px 2px,
+        8px 0,
+        calc(100% - 8px) 0,
+        calc(100% - 8px) 2px,
+        calc(100% - 4px) 2px,
+        calc(100% - 4px) 4px,
+        calc(100% - 2px) 4px,
+        calc(100% - 2px) 8px,
+        100% 8px,
+        100% calc(100% - 8px),
+        calc(100% - 2px) calc(100% - 8px),
+        calc(100% - 2px) calc(100% - 4px),
+        calc(100% - 4px) calc(100% - 4px),
+        calc(100% - 4px) calc(100% - 2px),
+        calc(100% - 8px) calc(100% - 2px),
+        calc(100% - 8px) 100%,
+        8px 100%,
+        8px calc(100% - 2px),
+        4px calc(100% - 2px),
+        4px calc(100% - 4px),
+        2px calc(100% - 4px),
+        2px calc(100% - 8px),
+        0 calc(100% - 8px)
+    );
+}
+
+#intro-popup-title,
+.intro-popup-lede {
+    margin: 0 0 14px;
+    line-height: 1.15;
+    text-transform: uppercase;
+}
+
+#intro-popup-title {
+    font-size: 48px;
+    font-style: italic;
+}
+
+.intro-popup-lede {
+    font-size: 24px;
+}
+
+#intro-popup-panel p {
+    margin: 0 0 14px;
+}
+
+#intro-popup-panel p:last-child {
+    margin-bottom: 0;
+}
+
 #game-container {
     flex: 0 0 clamp(220px, 32vh, 380px);
     height: clamp(220px, 32vh, 380px);
@@ -718,5 +810,19 @@ html {
         padding: 10px;
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    #intro-popup-panel {
+        font-size: 13px;
+        padding: 18px 20px;
+    }
+
+    #intro-popup-title,
+    .intro-popup-lede {
+        font-size: 19px;
+    }
+
+    #intro-popup-title {
+        font-size: 38px;
     }
 }

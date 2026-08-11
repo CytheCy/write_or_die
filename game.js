@@ -25,6 +25,8 @@ const contactEmailInput = document.getElementById("contact-email");
 const contactMessageInput = document.getElementById("contact-message");
 const contactSendBtn = document.getElementById("contact-send-btn");
 const contactStatus = document.getElementById("contact-status");
+const introPopup = document.getElementById("intro-popup");
+const introPopupPanel = document.getElementById("intro-popup-panel");
 
 if (
   !skyCanvas ||
@@ -53,9 +55,56 @@ if (
   !contactEmailInput ||
   !contactMessageInput ||
   !contactSendBtn ||
-  !contactStatus
+  !contactStatus ||
+  !introPopup ||
+  !introPopupPanel
 ) {
   throw new Error("Missing required DOM elements for game startup.");
+}
+
+const INTRO_POPUP_SEEN_KEY = "writingDashIntroSeen";
+let isIntroPopupOpen = false;
+
+function hasSeenIntroPopup() {
+  try {
+    return window.localStorage.getItem(INTRO_POPUP_SEEN_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function markIntroPopupSeen() {
+  try {
+    window.localStorage.setItem(INTRO_POPUP_SEEN_KEY, "true");
+  } catch {
+    // Continue without persistence when storage is unavailable.
+  }
+}
+
+function showIntroPopupIfNeeded() {
+  if (hasSeenIntroPopup()) return;
+
+  isIntroPopupOpen = true;
+  introPopup.classList.add("is-visible");
+  introPopup.setAttribute("aria-hidden", "false");
+  setTimeout(() => {
+    introPopupPanel.focus({ preventScroll: true });
+  }, 0);
+}
+
+function hideIntroPopup(event) {
+  if (!isIntroPopupOpen) return;
+
+  if (event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }
+
+  isIntroPopupOpen = false;
+  introPopup.classList.remove("is-visible");
+  introPopup.setAttribute("aria-hidden", "true");
+  markIntroPopupSeen();
+  refocusWriterSoon();
 }
 
 function focusWriter() {
@@ -75,7 +124,7 @@ function isContactPopupOpen() {
 }
 
 function isOverlayOpen() {
-  return isSharePopupOpen() || isContactPopupOpen();
+  return isIntroPopupOpen || isSharePopupOpen() || isContactPopupOpen();
 }
 
 function openSharePopup() {
@@ -551,10 +600,18 @@ function draw() {
 resize();
 draw();
 focusWriter();
+showIntroPopupIfNeeded();
 window.addEventListener("load", () => {
+  if (isIntroPopupOpen) {
+    introPopupPanel.focus({ preventScroll: true });
+    return;
+  }
   focusWriter();
   setTimeout(focusWriter, 75);
 });
+
+document.addEventListener("click", hideIntroPopup, true);
+document.addEventListener("keydown", hideIntroPopup, true);
 
 // Keep typing focus after clicks outside the textarea (including control buttons).
 document.addEventListener("click", (event) => {
